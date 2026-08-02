@@ -83,6 +83,17 @@ If Ubuntu already contains a different Hermes checkout, the installer stops
 instead of force-replacing it. Back up deliberate local changes before opting
 into any commit replacement.
 
+### Existing working Hermes installation
+
+To install only the launch wrappers without changing packages, the Hermes
+checkout, or the Desktop build, run from Termux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-launchers.sh | bash
+```
+
+Then test the packaged launch flow with `hermes-android`.
+
 ## Configure a model
 
 After installation, configure Hermes from the Termux shell:

@@ -7,6 +7,10 @@ entry commands, and visual proof.
 Do not publish until the final launch wrapper has been run once on the working
 phone. The manual stack is proven; the one-command automation is newly packaged.
 
+For that validation, install only the wrappers on the existing phone—without
+reinstalling Hermes or packages—using the README's launcher-only command, then
+run `hermes-android`.
+
 ## Post 1 — result
 
 > 1/13
