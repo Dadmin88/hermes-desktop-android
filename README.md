@@ -2,69 +2,232 @@
 
 ![Hermes Desktop on Android — step-by-step community guide](assets/social/hermes-desktop-on-android-cover.png)
 
-Reproducible setup notes and launch tooling for running the Linux Hermes
-Desktop application on an Android phone through Termux and Termux:X11.
+Run the real Linux Hermes Desktop Electron application on an Android phone
+through Termux, Termux:X11, a Termux-native Xfce desktop, and an Ubuntu PRoot
+guest.
 
 > [!IMPORTANT]
 > This is a community experiment, not an official Nous Research Android port.
-> Hermes officially documents the CLI on Termux; the Desktop application is
-> officially supported on macOS, Windows, and Linux. This project documents a
-> working Android setup and the extra compatibility steps it needs.
+> Hermes officially supports its CLI on Termux. Its Desktop app is supported on
+> desktop operating systems; this project documents a reproducible compatibility
+> setup that worked on a Galaxy S25.
 
-## What this project will contain
+## What you get
 
-- Exact prerequisites and tested device information
-- Repeatable installation commands
-- An Android-friendly Hermes Desktop launcher
-- Termux:X11 touch, scaling, and window-management settings
-- Visible local-browser setup
-- A read-only diagnostics script
-- Troubleshooting for the failures encountered during the original setup
+- The real Hermes Desktop interface—not a recreated web page
+- A touch-usable Xfce desktop rendered by Termux:X11
+- Hermes Agent and Electron running in an aarch64 Ubuntu environment
+- Visible headed browser windows in the same Linux desktop
+- One `hermes-android` command for normal launches
+- Versioned diagnostics and troubleshooting
 
-See [Troubleshooting](docs/TROUBLESHOOTING.md) for the compatibility fixes and
-[Stack details](docs/STACK.md) for the architecture.
+This is **not** an APK, and it does not automatically grant Hermes control over
+Android apps or privileged Android APIs. See [Architecture](docs/STACK.md).
 
-## Architecture
+## Tested stack
 
-Android does not execute the Linux Electron build directly as a native Android
-application. The working stack has four layers:
+Captured from the working phone on 2026-08-02:
 
-1. **Android** provides the device and app sandbox.
-2. **Termux** provides the terminal and Unix userland.
-3. **Termux:X11** renders Linux windows on the Android display.
-4. **Hermes Desktop** runs its normal Electron UI and talks to the normal
-   Hermes backend.
+| Component | Tested value |
+|---|---|
+| Device | Samsung Galaxy S25 family, aarch64 |
+| Linux guest | Ubuntu 24.04.4 LTS under PRoot Distro |
+| Display | Termux:X11 on `:1` |
+| Node.js | 22.23.1 |
+| npm | 10.9.8 |
+| Hermes | Agent v0.19.1 / upstream revision `c2ff2e8b` |
+| Python used by Hermes | 3.11.15, managed inside the Hermes install |
+| Hermes install | `/usr/local/lib/hermes-agent` |
+| Hermes command | `/usr/local/bin/hermes` |
+| Desktop mode | Source build plus workspace Electron |
 
-This gets the real Hermes Desktop interface onto the phone. It does **not**
-turn the Electron app into an APK or automatically grant it Android system
-permissions.
+The source checkout had only npm-generated `package-lock.json` churn. No
+Android-specific Hermes source patch was required.
+
+## Before you start
+
+Install both Android apps:
+
+1. **Termux** from a current official Termux distribution channel.
+2. **Termux:X11** from its official
+   [nightly release](https://github.com/termux/termux-x11/releases/tag/nightly).
+   Install `termux-x11-universal-debug.apk`.
+
+Termux:X11 requires both the Android APK and its companion Termux package. The
+installer below handles the companion package.
+
+If you choose the `sharedUid` Termux:X11 APK to reduce Android background
+slowdowns, follow the upstream signing requirements exactly: it only works with
+a compatible GitHub-built Termux APK. Do not mix APK sources.
+
+## Install
+
+Open the **Termux host shell**—not an Ubuntu prompt—and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-termux.sh | bash
+```
+
+The installer deliberately has two stages:
+
+1. Termux installs `x11-repo`, `termux-x11-nightly`, `proot-distro`,
+   `pulseaudio`, `xfce`, and the host launcher.
+2. Ubuntu installs Linux build dependencies, pins the known-working Hermes
+   commit, installs Hermes, builds Desktop in source mode, and installs the
+   guest launchers.
+
+The first build downloads and compiles a substantial JavaScript/Electron
+workspace. Keep Termux in the foreground and prevent Android from suspending it.
+
+If Ubuntu already contains a different Hermes checkout, the installer stops
+instead of force-replacing it. Back up deliberate local changes before opting
+into any commit replacement.
+
+## Configure a model
+
+After installation, configure Hermes from the Termux shell:
+
+```bash
+proot-distro login ubuntu --shared-tmp -- hermes model
+```
+
+Or run the full setup:
+
+```bash
+proot-distro login ubuntu --shared-tmp -- hermes setup
+```
+
+Hermes stores its own credentials and configuration. This repository does not
+read, copy, or publish them.
+
+## Launch
+
+From Termux:
+
+```bash
+hermes-android
+```
+
+That command:
+
+1. Starts the Termux PulseAudio server.
+2. Starts Termux:X11 on display `:1` at 120 DPI.
+3. Opens the Termux:X11 Android activity.
+4. Starts the Termux-native Xfce session.
+5. Enters Ubuntu with `proot-distro --shared-tmp`.
+6. Launches Hermes from its source build with workspace Electron.
+
+The launcher defaults can be overridden when a device needs them:
+
+```bash
+HERMES_X11_DPI=144 hermes-android
+HERMES_X11_EXTRA_ARGS=-legacy-drawing hermes-android
+HERMES_X11_EXTRA_ARGS="-legacy-drawing -force-bgra" hermes-android
+```
+
+## Make touch usable
+
+Inside the Termux:X11 app:
+
+- Use **touchpad mode** for desktop-style pointer control.
+- Tap for left click; two-finger tap for right click.
+- Two-finger swipe scrolls.
+- In simulated touchscreen mode, long-press and move to drag.
+- Press Android **Back** to toggle the on-screen keyboard.
+- Use the Xfce panel or `Alt+Tab` for minimized Hermes and browser windows.
+- Landscape orientation gives Hermes substantially more usable room.
+
+## Visible browser windows
+
+The launcher sets:
+
+```bash
+AGENT_BROWSER_HEADED=1
+AGENT_BROWSER_ARGS=--no-sandbox,--disable-dev-shm-usage
+```
+
+Hermes browser tools therefore open a headed browser on the same X11 display.
+If Hermes says a browser opened but you cannot see it, use the Xfce taskbar or
+`Alt+Tab`; it is a Linux window, not a separate Android recent-app card.
+
+## Why source mode?
+
+The verified phone has:
+
+- `apps/desktop/dist/index.html`
+- workspace Electron under `node_modules/electron/dist/electron`
+- no packaged app under `apps/desktop/release`
+
+That is expected. The project builds Hermes Desktop with:
+
+```bash
+hermes desktop --source --build-only
+```
+
+and launches the resulting renderer directly through workspace Electron. This
+avoids the extra electron-builder packaging layer that is unnecessary on the
+phone.
+
+Because the Ubuntu PRoot guest runs as root, Chromium/Electron is launched with
+`--no-sandbox`. That is a compatibility tradeoff, not a security improvement.
+Only run trusted code and trusted Electron content in this environment.
 
 ## Diagnostics
 
-Run:
+The doctor is layer-aware. Run it once from Termux:
 
 ```bash
-bash scripts/doctor.sh
+curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/doctor.sh | bash
 ```
 
-The report contains versions and paths needed to reproduce a setup. It does
-not read Hermes API keys, model credentials, or chat contents.
+Then run it inside Ubuntu:
 
-## Status
+```bash
+proot-distro login ubuntu --shared-tmp -- bash -lc \
+  'curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/doctor.sh | bash'
+```
 
-The repository is being assembled from a working Galaxy S25 setup. Installer
-and launcher scripts will be published after the exact runtime versions are
-captured and checked against current Hermes upstream.
+The report intentionally omits API keys, `.env` files, auth data, sessions,
+chat history, and message contents.
+
+## Manual inspection
+
+Every mutating installer supports a dry run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-termux.sh \
+  | bash -s -- --dry-run
+```
+
+Read [Troubleshooting](docs/TROUBLESHOOTING.md) for black screens, incorrect
+colors, scaling, hidden windows, browser issues, and build failures.
+
+The ready-to-post social walkthrough and media checklist live in the
+[X tutorial thread](docs/X-THREAD.md).
+
+## Project status
+
+The working phone proves the architecture and source-mode launch path. The
+automation is regression-tested in this repository, but a completely fresh
+device install is still awaiting community verification. If you reproduce it,
+open an issue with both layer-aware doctor reports and your device model.
+
+## Development checks
+
+```bash
+bash tests/run.sh
+```
 
 ## Upstream projects
 
 - [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
 - [termux/termux-app](https://github.com/termux/termux-app)
 - [termux/termux-x11](https://github.com/termux/termux-x11)
+- [termux/proot-distro](https://github.com/termux/proot-distro)
 
-The source links used to validate this guide are collected in
-[docs/SOURCES.md](docs/SOURCES.md).
+Primary references are collected in [Sources](docs/SOURCES.md).
 
 ## License
 
-MIT. Hermes Agent and Termux:X11 retain their own licenses and trademarks.
+MIT. Hermes Agent, Termux, Termux:X11, Xfce, Electron, and their trademarks
+remain subject to their own licenses and policies.
