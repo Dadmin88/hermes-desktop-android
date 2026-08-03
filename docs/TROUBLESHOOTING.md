@@ -68,7 +68,7 @@ itself. The launcher must also start the standalone `xfwm4` process. Refresh
 the launchers, then relaunch:
 
 ```bash
-release=v0.1.0
+release=v0.1.1
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh.sha256"
 sha256sum --check install-launchers.sh.sha256

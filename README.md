@@ -31,21 +31,18 @@ explicitly authorized device access. See [Architecture](docs/STACK.md).
 
 ## Tested stack
 
-Captured from a working installation on 2026-08-02:
+Manually verified on two physical Android devices:
 
-| Component | Tested value |
-|---|---|
-| Device | Samsung Galaxy S25, aarch64 |
-| Android | 16 / API 36 |
-| Linux guest | Ubuntu 24.04.4 LTS under PRoot Distro |
-| Display | Termux:X11 on `:1` |
-| Node.js | 22.23.1 |
-| npm | 10.9.8 |
-| Hermes | Agent v0.19.1 / upstream revision `c2ff2e8b` |
-| Python used by Hermes | 3.11.15, managed inside the Hermes install |
-| Hermes install | `/usr/local/lib/hermes-agent` |
-| Hermes command | `/usr/local/bin/hermes` |
-| Desktop mode | Source build plus workspace Electron |
+| Device | Android | Linux guest | Node.js / npm | Result |
+|---|---|---|---|---|
+| Samsung Galaxy S25 | 16 / API 36 | Ubuntu 24.04.4 LTS | 22.23.1 / 10.9.8 | Desktop GUI verified |
+| Samsung Galaxy Tab S6 Lite (`SM-P620`) | 16 / API 36 | Ubuntu 26.04 LTS | 22.23.2 / 10.9.8 | Fresh install and Desktop GUI verified |
+
+Both installations use Termux:X11 on `:1`, standalone `xfwm4`, Hermes Agent
+v0.19.1 at upstream revision `c2ff2e8b`, managed Python 3.11.15, and the
+source-built workspace Electron application under `/usr/local/lib/hermes-agent`.
+The tablet verification exposed missing Electron runtime packages in `v0.1.0`;
+`v0.1.1` installs `libnspr4`, `libnss3`, and `libgl1` automatically.
 
 The source checkout had only npm-generated `package-lock.json` churn. No
 Android-specific Hermes source patch was required.
@@ -71,7 +68,7 @@ a compatible GitHub-built Termux APK. Do not mix APK sources.
 Open the **Termux host shell**—not an Ubuntu prompt—and run:
 
 ```bash
-release=v0.1.0
+release=v0.1.1
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh.sha256"
 sha256sum --check install-termux.sh.sha256
@@ -106,7 +103,7 @@ To install only the launch wrappers without changing packages, the Hermes
 checkout, or the Desktop build, run from Termux:
 
 ```bash
-release=v0.1.0
+release=v0.1.1
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh.sha256"
 sha256sum --check install-launchers.sh.sha256
@@ -254,7 +251,7 @@ Only run trusted code and trusted Electron content in this environment.
 The doctor is layer-aware. Run it once from Termux:
 
 ```bash
-release=v0.1.0
+release=v0.1.1
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh.sha256"
 sha256sum --check doctor.sh.sha256
@@ -290,16 +287,16 @@ colors, scaling, hidden windows, browser issues, and build failures.
 
 ## Project status
 
-The direct-X11 launcher and optional same-device Wireless ADB bridge have been
-manually verified. The automation is regression-tested in this repository, but
-a completely fresh device install is still awaiting community verification. If
-you reproduce it, open a
+The direct-X11 workflow has been manually verified on two physical Android
+devices, including a fresh installation on the Galaxy Tab S6 Lite. The
+automation is regression-tested in this repository, but broad Android-device
+compatibility remains unverified. If you reproduce it on another device, open a
 [device compatibility report](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)
 with both layer-aware doctor reports and your device model.
 
 ## Releases
 
-The current project release is `v0.1.0`. Installers default to that project tag
+The current project release is `v0.1.1`. Installers default to that project tag
 and separately pin the known-working Hermes upstream revision. See the
 [changelog](CHANGELOG.md) and [release page](https://github.com/Dadmin88/hermes-desktop-android/releases/latest).
 
