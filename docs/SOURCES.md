@@ -26,7 +26,7 @@ Termux:X11 upstream requires both the Android APK and companion Termux package.
 Its PRoot instructions require `proot-distro login ... --shared-tmp`. It also
 documents the `:1` display, optional Xfce startup, DPI controls, legacy drawing,
 BGRA, touch gestures, and the command used to open the Android activity. The
-verified Galaxy S25 path launches Hermes directly without Xfce.
+tested direct-X11 path launches Hermes without Xfce.
 
 ## Android Wireless ADB
 
@@ -38,9 +38,3 @@ Android documents pairing-code Wireless debugging on Android 11 and newer. The
 temporary pairing port and normal connection port are separate values. This
 repository treats ADB as an optional, explicitly authorized bridge rather than
 part of the Hermes Desktop display stack.
-
-## X publishing constraints
-
-- [How to create a thread](https://help.x.com/en/using-x/create-a-thread)
-- [Post and media limits](https://help.x.com/en/using-x/how-to-post)
-- [Image descriptions](https://help.x.com/en/using-x/add-image-descriptions)

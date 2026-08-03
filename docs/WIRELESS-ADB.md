@@ -4,8 +4,8 @@ Hermes Desktop and Android control are separate. Termux:X11 displays the Linux
 Electron app; Wireless ADB gives an explicitly authorized process inside Ubuntu
 access to Android's debugging interface.
 
-The bridge was verified on a Samsung SM-S931W / Galaxy S25 running Android 16.
-Android 11 or newer is required for pairing-code Wireless debugging.
+The bridge was verified on Android 16. Android 11 or newer is required for
+pairing-code Wireless debugging.
 
 > [!WARNING]
 > ADB can inspect the screen, launch apps, enter text, install software, and

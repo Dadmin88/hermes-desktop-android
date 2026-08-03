@@ -25,10 +25,10 @@ flowchart TB
 | Ubuntu PRoot | glibc Linux environment, Hermes, Node, Electron dependencies |
 | Hermes Desktop | Electron renderer, local backend, projects, sessions, tools |
 
-The verified Galaxy S25 launches Hermes directly into Termux:X11 with no Xfce
-installation. If a user adds Xfce for multi-window management, it belongs in
-Termux rather than the Ubuntu guest. Ubuntu contributes the app, not the display
-server or desktop shell.
+The tested direct-X11 path launches Hermes with no Xfce installation. If a user
+adds Xfce for multi-window management, it belongs in Termux rather than the
+Ubuntu guest. Ubuntu contributes the app, not the display server or desktop
+shell.
 
 ## Source-mode Desktop
 
