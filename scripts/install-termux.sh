@@ -57,14 +57,19 @@ fi
 if [ "$dry_run" = true ]; then
     printf 'curl -fsSL %s/scripts/launch-android.sh -o %s/bin/hermes-android\n' \
         "$raw_base" "$termux_prefix"
+    printf 'curl -fsSL %s/scripts/enter-ubuntu.sh -o %s/bin/hermes-ubuntu\n' \
+        "$raw_base" "$termux_prefix"
     printf 'chmod +x %s/bin/hermes-android\n' "$termux_prefix"
+    printf 'chmod +x %s/bin/hermes-ubuntu\n' "$termux_prefix"
     printf 'proot-distro login ubuntu --shared-tmp -- curl -fsSL %s/scripts/install-ubuntu.sh | bash\n' \
         "$raw_base"
     exit 0
 fi
 
 curl -fsSL "$raw_base/scripts/launch-android.sh" -o "$termux_prefix/bin/hermes-android"
+curl -fsSL "$raw_base/scripts/enter-ubuntu.sh" -o "$termux_prefix/bin/hermes-ubuntu"
 chmod +x "$termux_prefix/bin/hermes-android"
+chmod +x "$termux_prefix/bin/hermes-ubuntu"
 
 proot-distro login ubuntu --shared-tmp -- \
     env \

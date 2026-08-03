@@ -32,7 +32,7 @@ port**. That is the connection endpoint used after pairing.
 From Termux, enter the same Ubuntu guest that runs Hermes:
 
 ```bash
-proot-distro login ubuntu --shared-tmp
+hermes-ubuntu
 ```
 
 Then install ADB:

@@ -15,6 +15,7 @@ output=$(HERMES_ANDROID_TEST_LAYER=termux bash "$installer" --dry-run 2>&1) \
 
 for expected in \
     '/bin/hermes-android' \
+    '/bin/hermes-ubuntu' \
     'proot-distro login ubuntu --shared-tmp' \
     '/usr/local/bin/hermes-android-desktop' \
     '/usr/local/bin/hermes-android-session'; do

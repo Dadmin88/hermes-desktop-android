@@ -31,6 +31,8 @@ termux_prefix="${PREFIX:-/data/data/com.termux/files/usr}"
 if [ "$dry_run" = true ]; then
     printf 'curl -fsSL %s/scripts/launch-android.sh -o %s/bin/hermes-android\n' \
         "$raw_base" "$termux_prefix"
+    printf 'curl -fsSL %s/scripts/enter-ubuntu.sh -o %s/bin/hermes-ubuntu\n' \
+        "$raw_base" "$termux_prefix"
     printf 'proot-distro login ubuntu --shared-tmp -- install launch-desktop.sh as /usr/local/bin/hermes-android-desktop\n'
     printf 'proot-distro login ubuntu --shared-tmp -- install launch-session.sh as /usr/local/bin/hermes-android-session\n'
     exit 0
@@ -43,9 +45,12 @@ if [ "${HERMES_ANDROID_TEST_LAYER:-}" != "termux" ] \
 fi
 
 host_tmp=$(mktemp)
-trap 'rm -f "$host_tmp"' EXIT HUP INT TERM
+ubuntu_helper_tmp=$(mktemp)
+trap 'rm -f "$host_tmp" "$ubuntu_helper_tmp"' EXIT HUP INT TERM
 curl -fsSL "$raw_base/scripts/launch-android.sh" -o "$host_tmp"
+curl -fsSL "$raw_base/scripts/enter-ubuntu.sh" -o "$ubuntu_helper_tmp"
 install -m 0755 "$host_tmp" "$termux_prefix/bin/hermes-android"
+install -m 0755 "$ubuntu_helper_tmp" "$termux_prefix/bin/hermes-ubuntu"
 
 proot-distro login ubuntu --shared-tmp -- env RAW_BASE="$raw_base" bash -lc '
 set -eu
@@ -59,3 +64,4 @@ install -m 0755 "$session_tmp" /usr/local/bin/hermes-android-session
 '
 
 printf 'Launchers installed. Start Hermes Desktop with: hermes-android\n'
+printf 'Enter the Ubuntu guest with: hermes-ubuntu\n'

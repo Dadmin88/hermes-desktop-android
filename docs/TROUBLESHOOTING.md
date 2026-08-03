@@ -40,7 +40,7 @@ Confirm the X11 server and guest use the same display number. This project uses
 
 ```bash
 termux-x11 :1 &
-proot-distro login ubuntu --shared-tmp
+hermes-ubuntu
 ```
 
 Some devices need Termux:X11's legacy drawing mode:
