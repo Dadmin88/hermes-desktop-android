@@ -14,11 +14,11 @@ output=$(HERMES_ANDROID_TEST_LAYER=proot bash "$installer" --dry-run 2>&1) \
     || fail 'Ubuntu installer dry run exits successfully'
 
 for expected in \
-    'apt-get install -y ca-certificates curl git build-essential xz-utils procps' \
+    'apt-get install -y ca-certificates curl git build-essential xz-utils procps libnspr4 libnss3 libgl1' \
     'c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f/scripts/install.sh' \
     '--skip-setup --commit c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f --force-commit' \
     'hermes desktop --source --build-only --force-build --hermes-root /usr/local/lib/hermes-agent' \
-    'hermes-desktop-android/v0.1.0/' \
+    'hermes-desktop-android/v0.1.1/' \
     '/usr/local/bin/hermes-android-desktop' \
     '/usr/local/bin/hermes-android-session'; do
     printf '%s\n' "$output" | grep -Fq -- "$expected" \

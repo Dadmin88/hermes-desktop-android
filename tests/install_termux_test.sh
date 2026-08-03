@@ -17,7 +17,7 @@ for expected in \
     'pkg install -y x11-repo' \
     'pkg install -y termux-x11-nightly proot-distro pulseaudio curl xfwm4' \
     'proot-distro install ubuntu' \
-    'hermes-desktop-android/v0.1.0/' \
+    'hermes-desktop-android/v0.1.1/' \
     '/bin/hermes-ubuntu' \
     'proot-distro login ubuntu --shared-tmp'; do
     printf '%s\n' "$output" | grep -Fq "$expected" \

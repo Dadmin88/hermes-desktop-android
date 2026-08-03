@@ -3,7 +3,7 @@
 set -eu
 
 dry_run=false
-repo_ref="${HERMES_ANDROID_REPO_REF:-v0.1.0}"
+repo_ref="${HERMES_ANDROID_REPO_REF:-v0.1.1}"
 hermes_commit="${HERMES_AGENT_COMMIT:-c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f}"
 project_raw="https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/$repo_ref"
 upstream_installer="https://raw.githubusercontent.com/NousResearch/hermes-agent/$hermes_commit/scripts/install.sh"
@@ -66,7 +66,8 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 run apt-get update
 run apt-get install -y \
-    ca-certificates curl git build-essential xz-utils procps
+    ca-certificates curl git build-essential xz-utils procps \
+    libnspr4 libnss3 libgl1
 
 if [ "$dry_run" = true ]; then
     printf 'curl -fsSL %s -o <temporary-file>\n' "$upstream_installer"

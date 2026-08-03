@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here.
 
+## v0.1.1 — 2026-08-03
+
+Second-device compatibility release.
+
+### Fixed
+
+- Install Electron runtime packages `libnspr4`, `libnss3`, and `libgl1` in the
+  Ubuntu PRoot guest before first launch.
+- Report all required Electron runtime packages in the layer-aware doctor.
+
+### Verification boundary
+
+The full install and real Hermes Desktop GUI were manually verified on a second
+physical device: Samsung Galaxy Tab S6 Lite (`SM-P620`), Android 16 / API 36,
+with Ubuntu 26.04 LTS under PRoot Distro. The first launch exposed the missing
+runtime packages fixed by this release. This remains a two-device compatibility
+result, not a claim of broad Android support.
+
 ## v0.1.0 — 2026-08-03
 
 First versioned public release of the Android compatibility workflow.

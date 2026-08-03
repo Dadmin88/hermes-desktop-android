@@ -23,8 +23,10 @@ test_proot_report_does_not_claim_termux_packages_are_missing() {
     if printf '%s\n' "$output" | grep -Eq '^xfce4(-session)?[[:space:]]+'; then
         fail 'doctor must not look for the Termux-native Xfce desktop inside PRoot'
     fi
-    printf '%s\n' "$output" | grep -Eq '^libgtk-3-0t64[[:space:]]+' \
-        || fail 'doctor checks the Ubuntu 24.04 GTK runtime package'
+    for package in libgtk-3-0t64 libnspr4 libnss3 libgbm1 libgl1; do
+        printf '%s\n' "$output" | grep -Eq "^${package}[[:space:]]+" \
+            || fail "doctor checks the PRoot Electron runtime package: $package"
+    done
 
     printf 'ok - PRoot report keeps host and guest package checks separate\n'
 }

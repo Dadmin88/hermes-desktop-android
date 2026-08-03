@@ -130,7 +130,7 @@ case "$environment_layer" in
         ;;
     proot)
         section "PRoot guest packages"
-        for package in libgtk-3-0t64 libnss3 libgbm1; do
+        for package in libgtk-3-0t64 libnspr4 libnss3 libgbm1 libgl1; do
             value_or_missing "$package" package_version "$package"
         done
         printf '%-22s %s\n' "Termux package check" "run doctor from the Termux host"
