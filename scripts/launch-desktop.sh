@@ -65,7 +65,8 @@ fi
 
 if ! electron=$(find_workspace_electron "$hermes_root"); then
     printf 'Hermes workspace Electron runtime not found under: %s\n' "$hermes_root" >&2
-    printf 'Build it with: hermes desktop --source --build-only\n' >&2
+    printf 'Repair it with: hermes desktop --source --build-only --force-build --hermes-root %s\n' \
+        "$hermes_root" >&2
     exit 1
 fi
 

@@ -76,7 +76,7 @@ else
         | bash -s -- --skip-setup --commit "$hermes_commit" --force-commit
 fi
 
-run hermes desktop --source --build-only --hermes-root "$hermes_root"
+run hermes desktop --source --build-only --force-build --hermes-root "$hermes_root"
 
 if [ "$dry_run" = true ]; then
     printf 'curl -fsSL %s/scripts/launch-desktop.sh -o /usr/local/bin/hermes-android-desktop\n' \
