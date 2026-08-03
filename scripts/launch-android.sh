@@ -74,7 +74,8 @@ fi
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity \
     >/dev/null 2>&1 || true
 
-if ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
+if command -v xfce4-session >/dev/null 2>&1 \
+    && ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
     env DISPLAY="$display" dbus-launch --exit-with-session xfce4-session \
         >"${TMPDIR:-/tmp}/hermes-termux-xfce.log" 2>&1 &
 
@@ -88,6 +89,8 @@ if ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
         fi
         sleep 1
     done
+elif ! command -v xfce4-session >/dev/null 2>&1; then
+    printf 'Xfce is not installed; launching Hermes directly in Termux:X11.\n'
 fi
 
 exec proot-distro login ubuntu --shared-tmp -- \
