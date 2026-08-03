@@ -8,7 +8,7 @@ layer tells you nothing about the other.
 
 This is expected when the doctor runs inside Ubuntu. Exit the PRoot shell and
 run the same doctor command directly in Termux to inspect `termux-x11-nightly`,
-`proot-distro`, `pulseaudio`, and `xfce`.
+`proot-distro`, `pulseaudio`, and `xfwm4`.
 
 ## `/dev/fd/63: No such file or directory`
 
@@ -55,9 +55,29 @@ Logs:
 cat "$TMPDIR/hermes-termux-x11.log"
 ```
 
-The `hermes-android` launcher does not start Xfce automatically, even when Xfce
-is installed. This prevents a broken optional desktop session from blocking
-Hermes direct mode.
+The `hermes-android` launcher starts `xfwm4` by itself, but never starts a full
+Xfce session. This preserves window controls without letting an optional
+desktop session block Hermes startup.
+
+## The maximize button does nothing
+
+Termux:X11 is the display server; it does not implement window actions by
+itself. The launcher must also start the standalone `xfwm4` process. Refresh
+the launchers, then relaunch:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-launchers.sh | bash
+hermes-android
+```
+
+Confirm the window manager is alive from Termux:
+
+```bash
+pgrep -a xfwm4
+```
+
+If it is missing, install the individual package with `pkg install xfwm4`. A
+full Xfce desktop session is not needed.
 
 ## Colors are incorrect
 
@@ -100,7 +120,7 @@ Hermes is a Linux window inside the Termux:X11 Android activity. In verified
 direct mode, restore **Termux:X11** from Android Recents. If the Electron process
 was closed, return to Termux and run `hermes-android` again.
 
-With optional Xfce installed, use its panel or `Alt+Tab` for Linux windows.
+Use `Alt+Tab` to switch Linux windows managed by the standalone `xfwm4` process.
 
 ## Hermes says a browser opened, but no browser is visible
 
@@ -116,10 +136,9 @@ Run the Ubuntu doctor and look for an `agent-browser` command or cached Chromium
 runtime. A global `chromium` executable is not required; agent-browser may use a
 downloaded Playwright browser.
 
-Direct mode has no Linux window switcher. Install optional Xfce if you need to
-manage Hermes and a headed Linux browser as separate windows. A native Android
-browser launched through Wireless ADB is different and appears in Android
-Recents; see [Wireless ADB](WIRELESS-ADB.md).
+The included `xfwm4` process supplies the Linux window switcher. A native
+Android browser launched through Wireless ADB is different and appears in
+Android Recents; see [Wireless ADB](WIRELESS-ADB.md).
 
 ## Electron refuses to run as root
 

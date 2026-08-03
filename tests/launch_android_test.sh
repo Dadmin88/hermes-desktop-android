@@ -37,6 +37,12 @@ EOF
     chmod +x "$fake_bin/$command_name"
 done
 
+cat >"$fake_bin/xfwm4" <<EOF
+#!/usr/bin/env bash
+printf 'xfwm4 %s\n' "\$*" >>"$call_log"
+EOF
+chmod +x "$fake_bin/xfwm4"
+
 cat >"$fake_bin/pgrep" <<'EOF'
 #!/usr/bin/env bash
 case "$*" in
@@ -54,13 +60,16 @@ chmod +x "$fake_bin/proot-distro"
 
 if ! PATH="$fake_bin:/usr/bin:/bin" HERMES_ANDROID_TEST_LAYER=termux \
     bash "$launcher" >/dev/null 2>&1; then
-    fail 'Android launcher proceeds without Xfce when Xfce is not installed'
+    fail 'Android launcher proceeds with the standalone window manager'
 fi
+
+grep -Fq -- 'xfwm4 --replace --daemon' "$call_log" \
+    || fail 'Android launcher starts xfwm4 so Electron windows can maximize and resize'
 
 grep -Fq -- 'login ubuntu --shared-tmp -- env DISPLAY=:1 PULSE_SERVER=127.0.0.1 hermes-android-session' \
     "$call_log" || fail 'Android launcher enters Ubuntu directly when Xfce is unavailable'
 
-printf 'ok - Android launcher does not require Xfce for direct Electron mode\n'
+printf 'ok - Android launcher starts a standalone window manager for Electron\n'
 
 cat >"$fake_bin/xfce4-session" <<'EOF'
 #!/usr/bin/env bash

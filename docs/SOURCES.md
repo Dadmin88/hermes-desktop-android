@@ -24,9 +24,9 @@ PRoot, launch, and diagnostics layer around upstream Hermes.
 
 Termux:X11 upstream requires both the Android APK and companion Termux package.
 Its PRoot instructions require `proot-distro login ... --shared-tmp`. It also
-documents the `:1` display, optional Xfce startup, DPI controls, legacy drawing,
-BGRA, touch gestures, and the command used to open the Android activity. The
-tested direct-X11 path launches Hermes without Xfce.
+documents the `:1` display, Xfce components, DPI controls, legacy drawing,
+BGRA, touch gestures, and the command used to open the Android activity. This
+project starts only `xfwm4`, not a full Xfce desktop session.
 
 ## Android Wireless ADB
 

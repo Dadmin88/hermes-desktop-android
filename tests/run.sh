@@ -4,8 +4,10 @@ set -eu
 
 repo_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 
-bash -n "$repo_root/scripts/doctor.sh"
-bash -n "$repo_root/scripts/launch-desktop.sh" 2>/dev/null || true
+for shell_file in "$repo_root"/scripts/*.sh "$repo_root"/tests/*.sh; do
+    bash -n "$shell_file"
+done
+
 bash "$repo_root/tests/doctor_test.sh"
 bash "$repo_root/tests/launch_desktop_test.sh"
 bash "$repo_root/tests/install_termux_test.sh"
@@ -13,3 +15,4 @@ bash "$repo_root/tests/install_ubuntu_test.sh"
 bash "$repo_root/tests/install_launchers_test.sh"
 bash "$repo_root/tests/launch_android_test.sh"
 bash "$repo_root/tests/launch_session_test.sh"
+bash "$repo_root/tests/test_suite_test.sh"

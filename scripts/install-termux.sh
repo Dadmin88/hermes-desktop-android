@@ -46,7 +46,7 @@ fi
 
 run pkg update -y
 run pkg install -y x11-repo
-run pkg install -y termux-x11-nightly proot-distro pulseaudio curl
+run pkg install -y termux-x11-nightly proot-distro pulseaudio curl xfwm4
 
 termux_prefix="${PREFIX:-/data/data/com.termux/files/usr}"
 ubuntu_root="$termux_prefix/var/lib/proot-distro/installed-rootfs/ubuntu"
