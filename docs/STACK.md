@@ -8,6 +8,7 @@ at a separate layer.
 flowchart TB
     A["Android phone"] --> B["Termux host"]
     B --> C["Termux:X11 display"]
+    B --> G["xfwm4 window manager"]
     B --> D["Ubuntu PRoot guest"]
     D --> E["Hermes backend"]
     D --> F["Hermes Desktop / Electron"]
@@ -21,14 +22,13 @@ flowchart TB
 | Layer | Owns |
 |---|---|
 | Android | App lifecycle, touch input, hardware, Android permissions |
-| Termux | X11 server companion, PulseAudio, PRoot launcher, optional Xfce |
+| Termux | X11 server companion, standalone `xfwm4`, PulseAudio, PRoot launcher |
 | Ubuntu PRoot | glibc Linux environment, Hermes, Node, Electron dependencies |
 | Hermes Desktop | Electron renderer, local backend, projects, sessions, tools |
 
-The tested direct-X11 path launches Hermes with no Xfce installation. If a user
-adds Xfce for multi-window management, it belongs in Termux rather than the
-Ubuntu guest. Ubuntu contributes the app, not the display server or desktop
-shell.
+The tested path launches the small `xfwm4` component directly, without an Xfce
+desktop session. It belongs in Termux beside the X server; Ubuntu contributes
+the app, not the display server or desktop shell.
 
 ## Source-mode Desktop
 
@@ -46,8 +46,8 @@ This is why a correct working report can show:
 
 - The interface is the real Hermes Desktop UI.
 - Hermes data and configuration stay in the Ubuntu Hermes installation.
-- Linux browser windows can use the same X11 display; a window manager is
-  recommended when several Linux windows must be switched or tiled.
+- Linux browser windows use the same X11 display and are managed alongside
+  Hermes by the standalone `xfwm4` process.
 - Android sees Termux:X11 as the visible Android app; individual Linux windows
   do not appear as separate Android recent-app cards.
 - Android still isolates Termux from other Android apps and privileged system
