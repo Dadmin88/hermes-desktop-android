@@ -23,7 +23,7 @@ done
 
 
 if printf '%s\n' "$output" | grep -Eq 'startxfce4|xfce4-session'; then
-    fail 'Ubuntu session must reuse the Termux-native Xfce session'
+    fail 'Ubuntu session must not require a desktop shell'
 fi
 
-printf 'ok - Ubuntu session launcher reuses the Termux-native Xfce desktop\n'
+printf 'ok - Ubuntu session launcher works in direct-X11 mode\n'

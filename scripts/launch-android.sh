@@ -38,7 +38,7 @@ if [ "$dry_run" = true ]; then
     printf 'pactl load-module module-native-protocol-tcp listen=127.0.0.1 auth-anonymous=1\n'
     printf 'termux-x11 %s -dpi %s%s%s\n' \
         "$display" "$dpi" "${x11_extra_args:+ }" "$x11_extra_args"
-    printf 'env DISPLAY=%s dbus-launch --exit-with-session xfce4-session\n' "$display"
+    printf 'optional, when installed: env DISPLAY=%s dbus-launch --exit-with-session xfce4-session\n' "$display"
     printf 'am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity\n'
     printf 'proot-distro login ubuntu --shared-tmp -- env DISPLAY=%s PULSE_SERVER=127.0.0.1 hermes-android-session\n' \
         "$display"

@@ -1,6 +1,6 @@
 # Primary sources
 
-Checked on 2026-08-02.
+Checked on 2026-08-03.
 
 ## Hermes Agent
 
@@ -24,8 +24,20 @@ PRoot, launch, and diagnostics layer around upstream Hermes.
 
 Termux:X11 upstream requires both the Android APK and companion Termux package.
 Its PRoot instructions require `proot-distro login ... --shared-tmp`. It also
-documents the `:1` display, Xfce startup, DPI controls, legacy drawing, BGRA,
-touch gestures, and the command used to open the Android activity.
+documents the `:1` display, optional Xfce startup, DPI controls, legacy drawing,
+BGRA, touch gestures, and the command used to open the Android activity. The
+verified Galaxy S25 path launches Hermes directly without Xfce.
+
+## Android Wireless ADB
+
+- [Android Debug Bridge](https://developer.android.com/tools/adb)
+- [Run apps on a hardware device](https://developer.android.com/studio/run/device)
+- [Configure on-device developer options](https://developer.android.com/studio/debug/dev-options)
+
+Android documents pairing-code Wireless debugging on Android 11 and newer. The
+temporary pairing port and normal connection port are separate values. This
+repository treats ADB as an optional, explicitly authorized bridge rather than
+part of the Hermes Desktop display stack.
 
 ## X publishing constraints
 

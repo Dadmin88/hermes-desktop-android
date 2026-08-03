@@ -63,13 +63,13 @@ test_source_mode_artifacts_are_detected() {
     printf 'ok - source-mode Hermes Desktop artifacts are detected\n'
 }
 
-test_termux_report_checks_native_xfce() {
+test_termux_report_labels_xfce_optional() {
     output=$(HERMES_DOCTOR_LAYER_OVERRIDE=termux bash "$doctor" 2>&1)
 
-    printf '%s\n' "$output" | grep -Eq '^xfce[[:space:]]+' \
-        || fail 'doctor checks the Termux-native Xfce package'
+    printf '%s\n' "$output" | grep -Eq '^xfce \(optional\)[[:space:]]+' \
+        || fail 'doctor labels the Termux Xfce package as optional'
 
-    printf 'ok - Termux report checks the native Xfce desktop\n'
+    printf 'ok - Termux report labels the native Xfce desktop as optional\n'
 }
 
 test_runtime_reports_python3_command() {
@@ -100,6 +100,6 @@ test_runtime_reports_playwright_browser_cache() {
 test_proot_report_does_not_claim_termux_packages_are_missing
 test_process_scan_avoids_process_substitution
 test_source_mode_artifacts_are_detected
-test_termux_report_checks_native_xfce
+test_termux_report_labels_xfce_optional
 test_runtime_reports_python3_command
 test_runtime_reports_playwright_browser_cache

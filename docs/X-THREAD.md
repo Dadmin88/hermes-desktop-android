@@ -1,202 +1,212 @@
 # X tutorial thread
 
-Recommended format: a thread, not one long post. The repository is the
-canonical manual; the thread gives readers the working mental model, exact
-entry commands, and visual proof.
+Recommended format: a 14-post thread. The repository is the canonical manual;
+the thread gives readers the exact setup, launch command, optional Android
+control bridge, and real proof from the verified phone.
 
-Do not publish until the final launch wrapper has been run once on the working
-phone. The manual stack is proven; the one-command automation is newly packaged.
-
-For that validation, install only the wrappers on the existing phone—without
-reinstalling Hermes or packages—using the README's launcher-only command, then
-run `hermes-android`.
+The direct-X11 launcher was manually verified on the Samsung SM-S931W / Galaxy
+S25 running Android 16. A completely fresh-device installation still needs
+independent community verification.
 
 ## Post 1 — result
 
-> 1/13
+> 1/14
 >
-> I got the real Hermes Desktop running on my Galaxy S25—with Xfce, touch controls, and a visible headed browser.
+> I got the real Hermes Desktop running locally on my Galaxy S25—then let that same Hermes instance operate Android through Wireless ADB.
 >
-> Not an APK. Not remote desktop. The Linux Electron app bridged onto Android.
+> No PC. No remote desktop. No fake web UI.
 >
-> Guide + scripts: https://github.com/Dadmin88/hermes-desktop-android
+> Here’s the exact setup 🧵
+>
+> https://github.com/Dadmin88/hermes-desktop-android
 
-**Media:** Use the branded cover first. Add the cleanest real Hermes screenshot
-as the second image if available.
+**Media:** Branded cover first; clean real Hermes screenshot second.
 
-## Post 2 — architecture
+## Post 2 — what was verified
 
-> 2/13
+> 2/14
+>
+> Verified on SM-S931W / Galaxy S25, Android 16.
+>
+> Hermes Desktop is the actual Linux Electron app. It renders through Termux:X11 while Hermes runs inside Ubuntu 24.04 under PRoot.
+>
+> Android control is a separate, optional bridge.
+
+**Media:** Real Hermes screenshot showing the app running on the phone.
+
+## Post 3 — architecture
+
+> 3/14
 >
 > The stack:
 >
-> Android
+> Android → Termux → Termux:X11
 >
-> → Termux
+> Termux → Ubuntu 24.04 PRoot → Hermes + Electron → X11
 >
-> → Termux:X11 + native Xfce
->
-> → Ubuntu 24.04 under PRoot
->
-> → Hermes Agent + Electron
->
-> Xfce stays in Termux. Hermes runs inside Ubuntu and renders onto the same `:1` X11 display.
+> Important discovery: the working phone does NOT need Xfce. Hermes launches directly into X11. Xfce remains optional for multi-window use.
 
-**Media:** Architecture graphic or a labeled screenshot of the Xfce desktop.
+## Post 4 — prerequisites
 
-## Post 3 — prerequisites
-
-> 3/13
+> 4/14
 >
-> First, install both Android apps:
+> First install two Android apps:
 >
-> 1. Termux
->
+> 1. Termux from a current official source
 > 2. Termux:X11 nightly
 >
 > X11 APK: https://github.com/termux/termux-x11/releases/tag/nightly
 >
-> You need the Android APK *and* its companion Termux package. The installer handles the companion package.
+> You need the APK plus its companion Termux package. The installer handles the package.
 
-**Media:** Real Android app-drawer screenshot showing Termux and Termux:X11.
+**Media:** Real app-drawer or installation screenshot showing both apps.
 
-## Post 4 — install
+## Post 5 — install
 
-> 4/13
+> 5/14
 >
 > Open Termux—not an Ubuntu prompt—and run:
 >
 > `curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-termux.sh | bash`
 >
-> It sets up X11, Xfce, audio, Ubuntu, Hermes, and the launchers. The first build takes a while.
+> Keep Termux awake and foregrounded. The first source build is substantial and will take time.
 
-**Media:** Terminal screenshot during the successful install/build.
+**Media:** Terminal screenshot during installation or the successful completion.
 
-## Post 5 — reproducible Hermes build
+## Post 6 — what the installer builds
 
-> 5/13
+> 6/14
 >
-> The script pins the tested Hermes revision and builds Desktop in source mode:
+> The script installs X11, audio, PRoot + Ubuntu, pins the tested Hermes revision, then builds Desktop in source mode:
 >
 > `hermes desktop --source --build-only`
 >
-> Important discovery: no private fork or Android-specific Hermes source patch was needed. The Android compatibility belongs in the launcher layer.
+> No private fork or Android-specific Hermes source patch was needed.
 
-## Post 6 — configure Hermes
+## Post 7 — configure a model
 
-> 6/13
+> 7/14
 >
-> Configure your model from Termux:
+> Configure Hermes from Termux:
 >
 > `proot-distro login ubuntu --shared-tmp -- hermes model`
 >
-> Or run the full wizard:
+> Or run the full setup wizard:
 >
 > `proot-distro login ubuntu --shared-tmp -- hermes setup`
 >
-> The repo never reads or copies your Hermes keys.
+> The community repo never reads or copies your API keys.
 
-## Post 7 — launch
+## Post 8 — launch
 
-> 7/13
+> 8/14
 >
-> Normal launches are one command:
+> Normal launches are now one command from Termux:
 >
 > `hermes-android`
 >
-> It starts audio + X11, opens Termux:X11, starts Xfce, enters Ubuntu with shared `/tmp`, then launches the real Hermes Electron UI.
+> It starts PulseAudio + Termux:X11, opens the X11 Android activity, enters Ubuntu with shared `/tmp`, and launches the source-built Hermes Electron app directly.
 
-**Media:** Short real screen recording: run the command, switch into X11, show
-Hermes ready.
-
-## Post 8 — why source mode
-
-> 8/13
->
-> Why source mode?
->
-> The working phone has the Desktop renderer and workspace Electron, but no packaged AppImage/deb under `apps/desktop/release`.
->
-> That’s intentional. Packaging adds another failure-prone layer and buys us nothing on the phone.
+**Media:** Short screen recording from the command to the working Hermes UI.
 
 ## Post 9 — touch controls
 
-> 9/13
+> 9/14
 >
-> Best phone settings:
+> Best phone setup:
 >
 > • landscape orientation
->
 > • Termux:X11 touchpad mode
->
 > • tap = click
->
 > • 2-finger tap = right click
->
 > • 2-finger swipe = scroll
->
 > • Android Back = keyboard
+> • Android Recents = return to Termux:X11
+
+**Media:** Termux:X11 input preferences or the working touch toolbar.
+
+## Post 10 — optional Android control
+
+> 10/14
 >
-> • Xfce panel / Alt+Tab = switch Linux windows
-
-**Media:** Screenshot of the Termux:X11 input preference screen.
-
-## Post 10 — visible browser
-
-> 10/13
+> Desktop alone does not control Android apps.
 >
-> For a visible local browser, the launcher enables headed mode and the root-compatible Chromium flags.
+> For that, enable Developer options → Wireless debugging on your OWN phone. This grants powerful ADB access, so disable it when finished and never expose it to an untrusted network.
+
+## Post 11 — pair from Ubuntu
+
+> 11/14
 >
-> If Hermes says “browser opened” but you can’t see it, use the Xfce taskbar or Alt+Tab. It’s a Linux window—not a separate Android recent-app card.
-
-**Media:** Real screenshot showing Hermes and the browser as separate Xfce
-windows.
-
-## Post 11 — device-specific fixes
-
-> 11/13
+> Enter Ubuntu and install ADB:
 >
-> Device-specific fixes are built in:
+> `proot-distro login ubuntu --shared-tmp`
+> `apt-get update && apt-get install -y adb`
 >
-> `HERMES_X11_DPI=144 hermes-android`
+> Tap “Pair device with pairing code” on Android, then run:
 >
-> `HERMES_X11_EXTRA_ARGS=-legacy-drawing hermes-android`
+> `adb pair PHONE_IP:PAIRING_PORT`
+
+**Media:** Real pairing-success screenshot with the temporary code hidden.
+
+## Post 12 — connect
+
+> 12/14
 >
-> For swapped colors, use `-force-bgra`. Full troubleshooting is in the repo.
-
-## Post 12 — verify both layers
-
-> 12/13
+> Close the pairing popup but leave Wireless debugging on. Use the IP + port on its MAIN screen:
 >
-> The doctor now understands both environments.
+> `adb connect PHONE_IP:CONNECTION_PORT`
+> `adb devices`
 >
-> Run it in Termux and Ubuntu. It reports host X11/packages and guest Hermes/Electron—without reading keys, `.env`, sessions, or chats.
+> Pairing port ≠ connection port. The connection port may change after a reboot or toggle.
+
+## Post 13 — prove native control
+
+> 13/14
 >
-> Commands: https://github.com/Dadmin88/hermes-desktop-android#diagnostics
-
-## Post 13 — honest status and invitation
-
-> 13/13
+> Safe proof commands:
 >
-> The manual stack works on my Galaxy S25. The repo packages it into tested scripts; fresh-device installs now need wider validation.
+> `adb shell input keyevent KEYCODE_HOME`
+> `adb shell am start -a android.settings.SETTINGS`
 >
-> If you reproduce it, open an issue with your phone model + both doctor reports. Let’s make this boringly reliable.
+> Hermes used that bridge to inspect the UI, press system buttons, open Settings, and launch Brave on the SAME phone running Hermes Desktop.
 
-## Media checklist
+**Media:** Real connected-success screenshot, then native Settings/Brave proof.
 
-- Branded cover: `assets/social/hermes-desktop-on-android-cover.png`
-- Clean Hermes Desktop screenshot
-- Termux + Termux:X11 app screenshot
-- Successful install/build screenshot
-- Short launch screen recording
-- Termux:X11 input preferences screenshot
-- Hermes + visible browser screenshot
+## Post 14 — status and invitation
 
-Generated artwork should be used only for the cover. Technical proof should be
-real so readers can compare their setup with the tested device.
+> 14/14
+>
+> The direct launcher + same-phone ADB control work on my Galaxy S25. The repo packages the setup, diagnostics, and troubleshooting; fresh-device installs now need wider validation.
+>
+> Try it, open an issue with your model + doctor reports, and help make it boringly reliable.
 
-## Cover alt text
+## Media order
+
+1. Post 1: generated branded cover + clean real Hermes screenshot.
+2. Post 2: real Hermes-on-phone proof.
+3. Post 4: Termux and Termux:X11 installation proof.
+4. Post 5: successful installer/launcher terminal output.
+5. Post 8: short launch screen recording if available.
+6. Post 11: pairing-success screenshot with temporary code hidden.
+7. Post 13: connected-success screenshot plus native Settings and Brave.
+
+Generated artwork is used only for the cover. Every technical claim is paired
+with real output or a real phone screenshot.
+
+## Alt text
+
+### Cover
 
 Dark charcoal and gold cover graphic. A landscape Android phone displays a
-desktop-style Hermes interface. Large text reads “Hermes Desktop on Android”
+desktop-style agent interface. Large text reads “Hermes Desktop on Android”
 with the subtitle “Step-by-step community guide.”
+
+### Hermes proof screenshot
+
+Hermes Desktop's dark green interface running full-screen through Termux:X11 on
+a Samsung Galaxy S25, with the Termux:X11 touch-control toolbar visible.
+
+### Wireless ADB proof screenshot
+
+Hermes Desktop reports a successful Wireless ADB connection to a Samsung Galaxy
+S25 running Android 16 and lists completed native Android control tests.

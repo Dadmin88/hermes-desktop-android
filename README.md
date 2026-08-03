@@ -3,8 +3,8 @@
 ![Hermes Desktop on Android — step-by-step community guide](assets/social/hermes-desktop-on-android-cover.png)
 
 Run the real Linux Hermes Desktop Electron application on an Android phone
-through Termux, Termux:X11, a Termux-native Xfce desktop, and an Ubuntu PRoot
-guest.
+through Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders
+Hermes directly into X11 and does not require Xfce or another desktop shell.
 
 > [!IMPORTANT]
 > This is a community experiment, not an official Nous Research Android port.
@@ -15,14 +15,16 @@ guest.
 ## What you get
 
 - The real Hermes Desktop interface—not a recreated web page
-- A touch-usable Xfce desktop rendered by Termux:X11
+- A touch-usable Hermes window rendered directly by Termux:X11
 - Hermes Agent and Electron running in an aarch64 Ubuntu environment
-- Visible headed browser windows in the same Linux desktop
 - One `hermes-android` command for normal launches
 - Versioned diagnostics and troubleshooting
+- Optional control of the same phone through an explicitly paired Wireless ADB
+  bridge
 
-This is **not** an APK, and it does not automatically grant Hermes control over
-Android apps or privileged Android APIs. See [Architecture](docs/STACK.md).
+This is **not** an APK. Desktop and Android control are separate layers:
+Termux:X11 displays Hermes, while the optional Wireless ADB bridge grants
+explicitly authorized device access. See [Architecture](docs/STACK.md).
 
 ## Tested stack
 
@@ -30,7 +32,8 @@ Captured from the working phone on 2026-08-02:
 
 | Component | Tested value |
 |---|---|
-| Device | Samsung Galaxy S25 family, aarch64 |
+| Device | Samsung SM-S931W / Galaxy S25, aarch64 |
+| Android | 16 / API 36 |
 | Linux guest | Ubuntu 24.04.4 LTS under PRoot Distro |
 | Display | Termux:X11 on `:1` |
 | Node.js | 22.23.1 |
@@ -71,7 +74,7 @@ curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/mai
 The installer deliberately has two stages:
 
 1. Termux installs `x11-repo`, `termux-x11-nightly`, `proot-distro`,
-   `pulseaudio`, `xfce`, and the host launcher.
+   `pulseaudio`, and the host launcher. Xfce is not required.
 2. Ubuntu installs Linux build dependencies, pins the known-working Hermes
    commit, installs Hermes, builds Desktop in source mode, and installs the
    guest launchers.
@@ -124,7 +127,8 @@ That command:
 1. Starts the Termux PulseAudio server.
 2. Starts Termux:X11 on display `:1` at 120 DPI.
 3. Opens the Termux:X11 Android activity.
-4. Starts the Termux-native Xfce session.
+4. Starts Xfce only when it is already installed; otherwise it continues in
+   verified direct-X11 mode.
 5. Enters Ubuntu with `proot-distro --shared-tmp`.
 6. Launches Hermes from its source build with workspace Electron.
 
@@ -145,10 +149,12 @@ Inside the Termux:X11 app:
 - Two-finger swipe scrolls.
 - In simulated touchscreen mode, long-press and move to drag.
 - Press Android **Back** to toggle the on-screen keyboard.
-- Use the Xfce panel or `Alt+Tab` for minimized Hermes and browser windows.
+- In direct mode, restore Termux:X11 from Android Recents if you switch away.
+- If you deliberately install Xfce, its panel and `Alt+Tab` can manage multiple
+  Linux windows.
 - Landscape orientation gives Hermes substantially more usable room.
 
-## Visible browser windows
+## Direct mode and browser windows
 
 The launcher sets:
 
@@ -157,9 +163,34 @@ AGENT_BROWSER_HEADED=1
 AGENT_BROWSER_ARGS=--no-sandbox,--disable-dev-shm-usage
 ```
 
-Hermes browser tools therefore open a headed browser on the same X11 display.
-If Hermes says a browser opened but you cannot see it, use the Xfce taskbar or
-`Alt+Tab`; it is a Linux window, not a separate Android recent-app card.
+Hermes browser tools can open a headed Linux browser on the same X11 display.
+Managing multiple Linux windows is easier with an optional window manager such
+as Xfce. A native Android browser opened through ADB is different: it appears as
+a normal Android app and can be restored from Android Recents.
+
+## Optional: let Hermes operate the same Android phone
+
+The working Galaxy S25 was paired back to itself through Android's Wireless ADB
+feature. That allowed Hermes to inspect the Android UI, send Home/Back/tap/swipe
+commands, open Settings, and launch Brave while Hermes Desktop kept running in
+Termux:X11.
+
+This is powerful access and is **not enabled by the desktop installer**. Only
+pair devices you own and trust, keep Wireless debugging off when you do not need
+it, and never expose an ADB endpoint to an untrusted network.
+
+Follow the exact [Wireless ADB bridge guide](docs/WIRELESS-ADB.md). The short
+version, run inside Ubuntu, is:
+
+```bash
+apt-get update && apt-get install -y adb
+adb pair PHONE_IP:PAIRING_PORT
+adb connect PHONE_IP:CONNECTION_PORT
+adb devices
+```
+
+The pairing and connection ports are normally different. Android shows both in
+**Developer options → Wireless debugging**.
 
 ## Why source mode?
 
@@ -218,7 +249,8 @@ The ready-to-post social walkthrough and media checklist live in the
 
 ## Project status
 
-The working phone proves the architecture and source-mode launch path. The
+The direct-X11 launcher has now been verified on the working Galaxy S25, along
+with optional Wireless ADB control of the same native Android device. The
 automation is regression-tested in this repository, but a completely fresh
 device install is still awaiting community verification. If you reproduce it,
 open an issue with both layer-aware doctor reports and your device model.
