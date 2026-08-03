@@ -27,6 +27,7 @@ for test_name in \
     install_termux_test.sh \
     install_ubuntu_test.sh \
     install_launchers_test.sh \
+    enter_ubuntu_test.sh \
     launch_android_test.sh \
     launch_session_test.sh \
     test_suite_test.sh; do

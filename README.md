@@ -17,7 +17,7 @@ not start a full Xfce desktop session.
 - A touch-usable Hermes window rendered directly by Termux:X11
 - Working move, maximize, resize, and window-switching controls from `xfwm4`
 - Hermes Agent and Electron running in an aarch64 Ubuntu environment
-- One `hermes-android` command for normal launches
+- `hermes-android` to launch Desktop and `hermes-ubuntu` to enter Ubuntu
 - Versioned diagnostics and troubleshooting
 - Optional control of the same phone through an explicitly paired Wireless ADB
   bridge
@@ -96,7 +96,19 @@ checkout, or the Desktop build, run from Termux:
 curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-launchers.sh | bash
 ```
 
-Then test the packaged launch flow with `hermes-android`.
+Then test the packaged launch flow with `hermes-android`. The same installer
+also adds `hermes-ubuntu` for opening the Ubuntu guest from Termux.
+
+## Enter Ubuntu
+
+From the Termux host prompt, run:
+
+```bash
+hermes-ubuntu
+```
+
+This is the memorable equivalent of
+`proot-distro login ubuntu --shared-tmp`. Type `exit` to return to Termux.
 
 ## Configure a model
 
