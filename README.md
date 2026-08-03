@@ -8,8 +8,8 @@ not start a full Xfce desktop session.
 > [!IMPORTANT]
 > This is a community experiment, not an official Nous Research Android port.
 > Hermes officially supports its CLI on Termux. Its Desktop app is supported on
-> desktop operating systems; this project documents a reproducible compatibility
-> layer for running it on Android.
+> desktop operating systems; this project documents a compatibility layer for
+> running it on Android.
 
 ## What you get
 
@@ -262,8 +262,9 @@ colors, scaling, hidden windows, browser issues, and build failures.
 The direct-X11 launcher and optional same-device Wireless ADB bridge have been
 manually verified. The automation is regression-tested in this repository, but
 a completely fresh device install is still awaiting community verification. If
-you reproduce it, open an issue with both layer-aware doctor reports and your
-device model.
+you reproduce it, open a
+[device compatibility report](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)
+with both layer-aware doctor reports and your device model.
 
 ## Development checks
 

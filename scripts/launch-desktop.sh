@@ -73,7 +73,8 @@ fi
 export DISPLAY="${DISPLAY:-:1}"
 export HERMES_DESKTOP_HERMES_ROOT="$hermes_root"
 if command -v hermes >/dev/null 2>&1; then
-    export HERMES_DESKTOP_HERMES="$(command -v hermes)"
+    HERMES_DESKTOP_HERMES=$(command -v hermes)
+    export HERMES_DESKTOP_HERMES
 fi
 export HERMES_DESKTOP_CWD="${HERMES_DESKTOP_CWD:-$PWD}"
 export AGENT_BROWSER_HEADED="${AGENT_BROWSER_HEADED:-1}"

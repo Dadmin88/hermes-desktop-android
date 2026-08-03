@@ -1,0 +1,121 @@
+name: Device compatibility report
+description: Report a successful install or a device-specific failure.
+title: "[device]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing Hermes Desktop on Android.
+
+        Remove API keys, tokens, credentials, private chats, and other sensitive information before submitting diagnostic output. The included doctor script is designed to omit those values, but review every report yourself.
+
+        If a doctor report is unavailable because installation failed before that layer existed, enter `Not available — failed before <stage>` in that report field.
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: Outcome
+      options:
+        - Hermes Desktop launched successfully
+        - Installation failed
+        - Termux:X11 opened, but Hermes Desktop did not
+        - Hermes Desktop opened with display or input problems
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device model
+      placeholder: Samsung Galaxy S25
+    validations:
+      required: true
+
+  - type: input
+    id: android
+    attributes:
+      label: Android version
+      placeholder: Android 16 / API 36
+    validations:
+      required: true
+
+  - type: input
+    id: architecture
+    attributes:
+      label: Device architecture
+      placeholder: aarch64
+
+  - type: input
+    id: termux
+    attributes:
+      label: Termux source and version
+      description: Include where Termux was installed from.
+      placeholder: GitHub release, version 0.118.3
+    validations:
+      required: true
+
+  - type: input
+    id: termux_x11
+    attributes:
+      label: Termux:X11 source and version
+      description: Leave blank if installation failed before Termux:X11 was installed.
+      placeholder: GitHub nightly universal debug APK and companion package
+
+  - type: dropdown
+    id: attempt
+    attributes:
+      label: Install attempt
+      options:
+        - First install on this device
+        - Retry after a failed install
+        - Upgrade or launcher refresh on an existing install
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Furthest stage reached
+      options:
+        - Before running the Termux installer
+        - Termux package installation
+        - Ubuntu PRoot creation
+        - Hermes installation or source build
+        - Termux:X11 opened
+        - Hermes Desktop opened
+        - Hermes Desktop worked with touch or keyboard input
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: What happened?
+      description: Include the command that failed and the complete error message.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: termux_doctor
+    attributes:
+      label: Termux host doctor report
+      description: Run the doctor from the Termux host shell and review it for private information before posting. If unavailable, state the stage that failed.
+      render: text
+
+  - type: textarea
+    id: ubuntu_doctor
+    attributes:
+      label: Ubuntu guest doctor report
+      description: Run the doctor inside the Ubuntu PRoot guest and review it for private information before posting. If unavailable, state the stage that failed.
+      render: text
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I removed credentials, tokens, private chats, and other sensitive information from this report.
+          required: true
+        - label: Where applicable, I installed the official Termux:X11 APK and companion package described in the README.

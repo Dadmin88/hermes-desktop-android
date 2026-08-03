@@ -61,21 +61,32 @@ if [ "$dry_run" = true ]; then
         "$raw_base" "$termux_prefix"
     printf 'chmod +x %s/bin/hermes-android\n' "$termux_prefix"
     printf 'chmod +x %s/bin/hermes-ubuntu\n' "$termux_prefix"
-    printf 'proot-distro login ubuntu --shared-tmp -- curl -fsSL %s/scripts/install-ubuntu.sh | bash\n' \
+    printf 'curl -fsSL %s/scripts/install-ubuntu.sh -o <shared-temporary-file>\n' \
         "$raw_base"
+    printf 'proot-distro login ubuntu --shared-tmp -- bash /tmp/<temporary-file>\n'
     exit 0
 fi
 
-curl -fsSL "$raw_base/scripts/launch-android.sh" -o "$termux_prefix/bin/hermes-android"
-curl -fsSL "$raw_base/scripts/enter-ubuntu.sh" -o "$termux_prefix/bin/hermes-ubuntu"
-chmod +x "$termux_prefix/bin/hermes-android"
-chmod +x "$termux_prefix/bin/hermes-ubuntu"
+termux_tmp="$termux_prefix/tmp"
+mkdir -p "$termux_tmp"
+host_launcher_tmp=$(mktemp "$termux_tmp/hermes-android.XXXXXX")
+ubuntu_helper_tmp=$(mktemp "$termux_tmp/hermes-ubuntu.XXXXXX")
+guest_installer_tmp=$(mktemp "$termux_tmp/hermes-install-ubuntu.XXXXXX")
+trap 'rm -f "$host_launcher_tmp" "$ubuntu_helper_tmp" "$guest_installer_tmp"' \
+    EXIT HUP INT TERM
+
+curl -fsSL "$raw_base/scripts/launch-android.sh" -o "$host_launcher_tmp"
+curl -fsSL "$raw_base/scripts/enter-ubuntu.sh" -o "$ubuntu_helper_tmp"
+curl -fsSL "$raw_base/scripts/install-ubuntu.sh" -o "$guest_installer_tmp"
 
 proot-distro login ubuntu --shared-tmp -- \
     env \
         HERMES_ANDROID_REPO_REF="$repo_ref" \
         HERMES_AGENT_COMMIT="$hermes_commit" \
-    bash -lc "curl -fsSL '$raw_base/scripts/install-ubuntu.sh' | bash"
+    bash "/tmp/$(basename "$guest_installer_tmp")"
+
+install -m 0755 "$host_launcher_tmp" "$termux_prefix/bin/hermes-android"
+install -m 0755 "$ubuntu_helper_tmp" "$termux_prefix/bin/hermes-ubuntu"
 
 printf '\nInstallation complete. Open the Termux:X11 Android app, then run:\n\n'
 printf '  hermes-android\n\n'

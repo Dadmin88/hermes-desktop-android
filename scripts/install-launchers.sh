@@ -52,6 +52,8 @@ curl -fsSL "$raw_base/scripts/enter-ubuntu.sh" -o "$ubuntu_helper_tmp"
 install -m 0755 "$host_tmp" "$termux_prefix/bin/hermes-android"
 install -m 0755 "$ubuntu_helper_tmp" "$termux_prefix/bin/hermes-ubuntu"
 
+# The variables below intentionally expand inside the guest shell, not here.
+# shellcheck disable=SC2016
 proot-distro login ubuntu --shared-tmp -- env RAW_BASE="$raw_base" bash -lc '
 set -eu
 desktop_tmp=$(mktemp)

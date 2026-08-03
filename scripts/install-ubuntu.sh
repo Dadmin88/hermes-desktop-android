@@ -69,11 +69,19 @@ run apt-get install -y \
     ca-certificates curl git build-essential xz-utils procps
 
 if [ "$dry_run" = true ]; then
-    printf 'curl -fsSL %s | bash -s -- --skip-setup --commit %s --force-commit\n' \
-        "$upstream_installer" "$hermes_commit"
+    printf 'curl -fsSL %s -o <temporary-file>\n' "$upstream_installer"
+    printf 'bash <temporary-file> --skip-setup --commit %s --force-commit\n' \
+        "$hermes_commit"
 else
-    curl -fsSL "$upstream_installer" \
-        | bash -s -- --skip-setup --commit "$hermes_commit" --force-commit
+    upstream_installer_tmp=$(mktemp)
+    desktop_launcher_tmp=$(mktemp)
+    session_launcher_tmp=$(mktemp)
+    trap 'rm -f "$upstream_installer_tmp" "$desktop_launcher_tmp" "$session_launcher_tmp"' \
+        EXIT HUP INT TERM
+
+    curl -fsSL "$upstream_installer" -o "$upstream_installer_tmp"
+    bash "$upstream_installer_tmp" \
+        --skip-setup --commit "$hermes_commit" --force-commit
 fi
 
 run hermes desktop --source --build-only --force-build --hermes-root "$hermes_root"
@@ -87,10 +95,9 @@ if [ "$dry_run" = true ]; then
     exit 0
 fi
 
-curl -fsSL "$project_raw/scripts/launch-desktop.sh" \
-    -o /usr/local/bin/hermes-android-desktop
-curl -fsSL "$project_raw/scripts/launch-session.sh" \
-    -o /usr/local/bin/hermes-android-session
-chmod +x /usr/local/bin/hermes-android-desktop /usr/local/bin/hermes-android-session
+curl -fsSL "$project_raw/scripts/launch-desktop.sh" -o "$desktop_launcher_tmp"
+curl -fsSL "$project_raw/scripts/launch-session.sh" -o "$session_launcher_tmp"
+install -m 0755 "$desktop_launcher_tmp" /usr/local/bin/hermes-android-desktop
+install -m 0755 "$session_launcher_tmp" /usr/local/bin/hermes-android-session
 
 printf '\nUbuntu guest installation complete.\n'
