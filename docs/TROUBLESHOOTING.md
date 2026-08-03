@@ -55,11 +55,9 @@ Logs:
 cat "$TMPDIR/hermes-termux-x11.log"
 ```
 
-If you deliberately installed Xfce, its optional log is:
-
-```bash
-cat "$TMPDIR/hermes-termux-xfce.log"
-```
+The `hermes-android` launcher does not start Xfce automatically, even when Xfce
+is installed. This prevents a broken optional desktop session from blocking
+Hermes direct mode.
 
 ## Colors are incorrect
 
