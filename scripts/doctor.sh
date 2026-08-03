@@ -189,7 +189,7 @@ if command -v pgrep >/dev/null 2>&1; then
             [ -n "$pid" ] || continue
             [ "$pid" = "$$" ] && continue
             if [ -r "/proc/$pid/comm" ]; then
-                process_name=$(cat "/proc/$pid/comm" 2>/dev/null | tr -d '\n')
+                process_name=$(tr -d '\n' <"/proc/$pid/comm" 2>/dev/null)
                 [ -n "$process_name" ] || continue
                 case "$process_name" in
                     bash|pgrep|codex*|bwrap) continue ;;
