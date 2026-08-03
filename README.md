@@ -1,7 +1,5 @@
 # Hermes Desktop on Android
 
-![Hermes Desktop on Android — step-by-step community guide](assets/social/hermes-desktop-on-android-cover.png)
-
 Run the real Linux Hermes Desktop Electron application on an Android phone
 through Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders
 Hermes directly into X11 and does not require Xfce or another desktop shell.
@@ -10,7 +8,7 @@ Hermes directly into X11 and does not require Xfce or another desktop shell.
 > This is a community experiment, not an official Nous Research Android port.
 > Hermes officially supports its CLI on Termux. Its Desktop app is supported on
 > desktop operating systems; this project documents a reproducible compatibility
-> setup that worked on a Galaxy S25.
+> layer for running it on Android.
 
 ## What you get
 
@@ -28,11 +26,11 @@ explicitly authorized device access. See [Architecture](docs/STACK.md).
 
 ## Tested stack
 
-Captured from the working phone on 2026-08-02:
+Captured from a working installation on 2026-08-02:
 
 | Component | Tested value |
 |---|---|
-| Device | Samsung SM-S931W / Galaxy S25, aarch64 |
+| Device | Samsung Galaxy S25, aarch64 |
 | Android | 16 / API 36 |
 | Linux guest | Ubuntu 24.04.4 LTS under PRoot Distro |
 | Display | Termux:X11 on `:1` |
@@ -170,10 +168,10 @@ a normal Android app and can be restored from Android Recents.
 
 ## Optional: let Hermes operate the same Android phone
 
-The working Galaxy S25 was paired back to itself through Android's Wireless ADB
-feature. That allowed Hermes to inspect the Android UI, send Home/Back/tap/swipe
-commands, open Settings, and launch Brave while Hermes Desktop kept running in
-Termux:X11.
+In the tested setup, the phone was paired back to itself through Android's
+Wireless ADB feature. That allowed Hermes to inspect the Android UI, send
+Home/Back/tap/swipe commands, and launch native Android apps while Hermes
+Desktop kept running in Termux:X11.
 
 This is powerful access and is **not enabled by the desktop installer**. Only
 pair devices you own and trust, keep Wireless debugging off when you do not need
@@ -244,16 +242,13 @@ curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/mai
 Read [Troubleshooting](docs/TROUBLESHOOTING.md) for black screens, incorrect
 colors, scaling, hidden windows, browser issues, and build failures.
 
-The ready-to-post social walkthrough and media checklist live in the
-[X tutorial thread](docs/X-THREAD.md).
-
 ## Project status
 
-The direct-X11 launcher has now been verified on the working Galaxy S25, along
-with optional Wireless ADB control of the same native Android device. The
-automation is regression-tested in this repository, but a completely fresh
-device install is still awaiting community verification. If you reproduce it,
-open an issue with both layer-aware doctor reports and your device model.
+The direct-X11 launcher and optional same-device Wireless ADB bridge have been
+manually verified. The automation is regression-tested in this repository, but
+a completely fresh device install is still awaiting community verification. If
+you reproduce it, open an issue with both layer-aware doctor reports and your
+device model.
 
 ## Development checks
 
