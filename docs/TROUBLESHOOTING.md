@@ -53,6 +53,11 @@ Logs:
 
 ```bash
 cat "$TMPDIR/hermes-termux-x11.log"
+```
+
+If you deliberately installed Xfce, its optional log is:
+
+```bash
 cat "$TMPDIR/hermes-termux-xfce.log"
 ```
 
@@ -93,15 +98,16 @@ scrolls. Press Android Back to toggle the on-screen keyboard.
 
 ## Hermes disappeared after it was minimized
 
-Hermes is a Linux window inside Termux:X11, not a separate Android activity.
-Restore it from the Xfce panel or use `Alt+Tab` inside Termux:X11.
+Hermes is a Linux window inside the Termux:X11 Android activity. In verified
+direct mode, restore **Termux:X11** from Android Recents. If the Electron process
+was closed, return to Termux and run `hermes-android` again.
 
-The same applies to browser windows opened by Hermes.
+With optional Xfce installed, use its panel or `Alt+Tab` for Linux windows.
 
 ## Hermes says a browser opened, but no browser is visible
 
-First use the Xfce panel or `Alt+Tab`. The launcher enables headed mode and sets
-the root-compatible Chromium flags automatically:
+The launcher enables headed mode and sets the root-compatible Chromium flags
+automatically:
 
 ```bash
 AGENT_BROWSER_HEADED=1
@@ -111,6 +117,11 @@ AGENT_BROWSER_ARGS=--no-sandbox,--disable-dev-shm-usage
 Run the Ubuntu doctor and look for an `agent-browser` command or cached Chromium
 runtime. A global `chromium` executable is not required; agent-browser may use a
 downloaded Playwright browser.
+
+Direct mode has no Linux window switcher. Install optional Xfce if you need to
+manage Hermes and a headed Linux browser as separate windows. A native Android
+browser launched through Wireless ADB is different and appears in Android
+Recents; see [Wireless ADB](WIRELESS-ADB.md).
 
 ## Electron refuses to run as root
 

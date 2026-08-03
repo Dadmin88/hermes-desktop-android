@@ -8,8 +8,8 @@ usage() {
     cat <<'EOF'
 Usage: hermes-android-session [--dry-run]
 
-Run inside the Ubuntu PRoot guest. It reuses the X11/Xfce session running in
-Termux and launches the source-mode Hermes Desktop wrapper.
+Run inside the Ubuntu PRoot guest. It reuses the Termux:X11 display and
+launches the source-mode Hermes Desktop wrapper. Xfce is optional.
 EOF
 }
 

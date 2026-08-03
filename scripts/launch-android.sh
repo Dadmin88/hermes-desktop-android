@@ -38,7 +38,7 @@ if [ "$dry_run" = true ]; then
     printf 'pactl load-module module-native-protocol-tcp listen=127.0.0.1 auth-anonymous=1\n'
     printf 'termux-x11 %s -dpi %s%s%s\n' \
         "$display" "$dpi" "${x11_extra_args:+ }" "$x11_extra_args"
-    printf 'env DISPLAY=%s dbus-launch --exit-with-session xfce4-session\n' "$display"
+    printf 'optional, when installed: env DISPLAY=%s dbus-launch --exit-with-session xfce4-session\n' "$display"
     printf 'am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity\n'
     printf 'proot-distro login ubuntu --shared-tmp -- env DISPLAY=%s PULSE_SERVER=127.0.0.1 hermes-android-session\n' \
         "$display"
@@ -74,7 +74,8 @@ fi
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity \
     >/dev/null 2>&1 || true
 
-if ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
+if command -v xfce4-session >/dev/null 2>&1 \
+    && ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
     env DISPLAY="$display" dbus-launch --exit-with-session xfce4-session \
         >"${TMPDIR:-/tmp}/hermes-termux-xfce.log" 2>&1 &
 
@@ -88,6 +89,8 @@ if ! pgrep -f '[x]fce4-session' >/dev/null 2>&1; then
         fi
         sleep 1
     done
+elif ! command -v xfce4-session >/dev/null 2>&1; then
+    printf 'Xfce is not installed; launching Hermes directly in Termux:X11.\n'
 fi
 
 exec proot-distro login ubuntu --shared-tmp -- \

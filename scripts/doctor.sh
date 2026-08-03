@@ -123,9 +123,10 @@ printf '%-22s %s\n' "Browser cache" "${browser_cache:-<missing>}"
 case "$environment_layer" in
     termux)
         section "Termux host packages"
-        for package in termux-x11-nightly proot-distro pulseaudio xfce; do
+        for package in termux-x11-nightly proot-distro pulseaudio; do
             value_or_missing "$package" package_version "$package"
         done
+        value_or_missing "xfce (optional)" package_version xfce
         ;;
     proot)
         section "PRoot guest packages"

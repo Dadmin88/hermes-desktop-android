@@ -7,12 +7,13 @@ at a separate layer.
 ```mermaid
 flowchart TB
     A["Android phone"] --> B["Termux host"]
-    B --> C["Termux:X11 + Xfce"]
+    B --> C["Termux:X11 display"]
     B --> D["Ubuntu PRoot guest"]
     D --> E["Hermes backend"]
     D --> F["Hermes Desktop / Electron"]
     F --> C
     E <--> F
+    D -. "optional Wireless ADB" .-> A
 ```
 
 ## Layer ownership
@@ -20,13 +21,14 @@ flowchart TB
 | Layer | Owns |
 |---|---|
 | Android | App lifecycle, touch input, hardware, Android permissions |
-| Termux | X11 server companion, Xfce, PulseAudio, PRoot launcher |
+| Termux | X11 server companion, PulseAudio, PRoot launcher, optional Xfce |
 | Ubuntu PRoot | glibc Linux environment, Hermes, Node, Electron dependencies |
 | Hermes Desktop | Electron renderer, local backend, projects, sessions, tools |
 
-Xfce is intentionally Termux-native in the verified stack. The Ubuntu doctor
-correctly reports no guest `xfce4` package because Ubuntu contributes the app,
-not the desktop shell.
+The verified Galaxy S25 launches Hermes directly into Termux:X11 with no Xfce
+installation. If a user adds Xfce for multi-window management, it belongs in
+Termux rather than the Ubuntu guest. Ubuntu contributes the app, not the display
+server or desktop shell.
 
 ## Source-mode Desktop
 
@@ -44,11 +46,13 @@ This is why a correct working report can show:
 
 - The interface is the real Hermes Desktop UI.
 - Hermes data and configuration stay in the Ubuntu Hermes installation.
-- Linux browser windows appear beside Hermes through the same X11 display.
+- Linux browser windows can use the same X11 display; a window manager is
+  recommended when several Linux windows must be switched or tiled.
 - Android sees Termux:X11 as the visible Android app; individual Linux windows
   do not appear as separate Android recent-app cards.
 - Android still isolates Termux from other Android apps and privileged system
-  APIs. Device control requires a separate, explicitly permissioned bridge.
+  APIs. Device control requires the separate, explicitly paired Wireless ADB
+  bridge documented in [Wireless ADB](WIRELESS-ADB.md).
 
 ## Security boundary
 

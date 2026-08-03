@@ -13,6 +13,7 @@ Usage: install-termux.sh [--dry-run]
 
 Run this stage in Termux, not inside Ubuntu. It installs the Android-side X11
 and PRoot packages, creates the Ubuntu guest, and invokes the guest installer.
+Hermes launches directly into Termux:X11; a desktop environment is optional.
 EOF
 }
 
@@ -45,7 +46,7 @@ fi
 
 run pkg update -y
 run pkg install -y x11-repo
-run pkg install -y termux-x11-nightly proot-distro pulseaudio xfce curl
+run pkg install -y termux-x11-nightly proot-distro pulseaudio curl
 
 termux_prefix="${PREFIX:-/data/data/com.termux/files/usr}"
 ubuntu_root="$termux_prefix/var/lib/proot-distro/installed-rootfs/ubuntu"
