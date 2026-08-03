@@ -26,3 +26,6 @@ jobs:
 
       - name: Run test suite
         run: bash tests/run.sh
+
+      - name: Build release assets
+        run: scripts/build-release-assets.sh /tmp/hermes-desktop-android-release

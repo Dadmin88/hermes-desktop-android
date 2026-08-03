@@ -18,6 +18,7 @@ for expected in \
     'c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f/scripts/install.sh' \
     '--skip-setup --commit c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f --force-commit' \
     'hermes desktop --source --build-only --force-build --hermes-root /usr/local/lib/hermes-agent' \
+    'hermes-desktop-android/v0.1.0/' \
     '/usr/local/bin/hermes-android-desktop' \
     '/usr/local/bin/hermes-android-session'; do
     printf '%s\n' "$output" | grep -Fq -- "$expected" \

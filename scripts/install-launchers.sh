@@ -3,7 +3,7 @@
 set -eu
 
 dry_run=false
-repo_ref="${HERMES_ANDROID_REPO_REF:-main}"
+repo_ref="${HERMES_ANDROID_REPO_REF:-v0.1.0}"
 raw_base="https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/$repo_ref"
 
 usage() {

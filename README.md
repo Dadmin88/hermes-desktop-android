@@ -1,5 +1,8 @@
 # Hermes Desktop on Android
 
+[![Shell checks](https://github.com/Dadmin88/hermes-desktop-android/actions/workflows/shell-checks.yml/badge.svg)](https://github.com/Dadmin88/hermes-desktop-android/actions/workflows/shell-checks.yml)
+[![Release](https://img.shields.io/github/v/release/Dadmin88/hermes-desktop-android)](https://github.com/Dadmin88/hermes-desktop-android/releases/latest)
+
 Run the real Linux Hermes Desktop Electron application on an Android phone
 through Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders
 Hermes directly into X11 with the standalone `xfwm4` window manager. It does
@@ -68,8 +71,18 @@ a compatible GitHub-built Termux APK. Do not mix APK sources.
 Open the **Termux host shell**—not an Ubuntu prompt—and run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-termux.sh | bash
+release=v0.1.0
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh"
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh.sha256"
+sha256sum --check install-termux.sh.sha256
+bash install-termux.sh
+rm -f install-termux.sh install-termux.sh.sha256
 ```
+
+The checksum must report `install-termux.sh: OK` before the installer runs.
+The release installer pins all nested project-script downloads to the exact
+release commit SHA; it does not assemble an installation from mutable branch or
+tag contents.
 
 The installer deliberately has two stages:
 
@@ -93,7 +106,12 @@ To install only the launch wrappers without changing packages, the Hermes
 checkout, or the Desktop build, run from Termux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-launchers.sh | bash
+release=v0.1.0
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh"
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh.sha256"
+sha256sum --check install-launchers.sh.sha256
+bash install-launchers.sh
+rm -f install-launchers.sh install-launchers.sh.sha256
 ```
 
 Then test the packaged launch flow with `hermes-android`. The same installer
@@ -126,6 +144,10 @@ proot-distro login ubuntu --shared-tmp -- hermes setup
 
 Hermes stores its own credentials and configuration. This repository does not
 read, copy, or publish them.
+
+Before upgrades, reinstalls, or removal, read
+[Maintenance, upgrades, and removal](docs/MAINTENANCE.md). It identifies the
+Hermes user-data boundary and includes backup-first procedures.
 
 ## Launch
 
@@ -232,14 +254,21 @@ Only run trusted code and trusted Electron content in this environment.
 The doctor is layer-aware. Run it once from Termux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/doctor.sh | bash
+release=v0.1.0
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh"
+curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh.sha256"
+sha256sum --check doctor.sh.sha256
+bash doctor.sh
 ```
 
 Then run it inside Ubuntu:
 
 ```bash
-proot-distro login ubuntu --shared-tmp -- bash -lc \
-  'curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/doctor.sh | bash'
+doctor=$(mktemp "$PREFIX/tmp/hermes-doctor.XXXXXX")
+cp doctor.sh "$doctor"
+proot-distro login ubuntu --shared-tmp -- \
+  bash "/tmp/$(basename "$doctor")"
+rm -f "$doctor" doctor.sh doctor.sh.sha256
 ```
 
 The report intentionally omits API keys, `.env` files, auth data, sessions,
@@ -250,9 +279,11 @@ chat history, and message contents.
 Every mutating installer supports a dry run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/main/scripts/install-termux.sh \
-  | bash -s -- --dry-run
+bash install-termux.sh --dry-run
 ```
+
+Download and verify `install-termux.sh` with the release checksum first, using
+the commands in [Install](#install).
 
 Read [Troubleshooting](docs/TROUBLESHOOTING.md) for black screens, incorrect
 colors, scaling, hidden windows, browser issues, and build failures.
@@ -265,6 +296,12 @@ a completely fresh device install is still awaiting community verification. If
 you reproduce it, open a
 [device compatibility report](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)
 with both layer-aware doctor reports and your device model.
+
+## Releases
+
+The current project release is `v0.1.0`. Installers default to that project tag
+and separately pin the known-working Hermes upstream revision. See the
+[changelog](CHANGELOG.md) and [release page](https://github.com/Dadmin88/hermes-desktop-android/releases/latest).
 
 ## Development checks
 
