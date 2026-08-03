@@ -39,7 +39,7 @@ if [ "$dry_run" = true ]; then
     printf 'termux-x11 %s -dpi %s%s%s\n' \
         "$display" "$dpi" "${x11_extra_args:+ }" "$x11_extra_args"
     printf 'am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity\n'
-    printf 'env DISPLAY=%s xfwm4 --replace --daemon\n' "$display"
+    printf 'env DISPLAY=%s xfwm4 --replace &\n' "$display"
     printf 'proot-distro login ubuntu --shared-tmp -- env DISPLAY=%s PULSE_SERVER=127.0.0.1 hermes-android-session\n' \
         "$display"
     exit 0
@@ -76,8 +76,8 @@ am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity \
 
 if command -v xfwm4 >/dev/null 2>&1 \
     && ! pgrep -x xfwm4 >/dev/null 2>&1; then
-    env DISPLAY="$display" xfwm4 --replace --daemon \
-        >"${TMPDIR:-/tmp}/hermes-termux-xfwm4.log" 2>&1
+    env DISPLAY="$display" xfwm4 --replace \
+        >"${TMPDIR:-/tmp}/hermes-termux-xfwm4.log" 2>&1 &
 fi
 
 printf 'Launching Hermes in Termux:X11 with standalone window management.\n'

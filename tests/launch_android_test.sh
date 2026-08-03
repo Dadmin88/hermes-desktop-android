@@ -18,10 +18,15 @@ for expected in \
     'pactl load-module module-native-protocol-tcp listen=127.0.0.1 auth-anonymous=1' \
     'termux-x11 :1 -dpi 120' \
     'am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity' \
+    'env DISPLAY=:1 xfwm4 --replace' \
     'proot-distro login ubuntu --shared-tmp -- env DISPLAY=:1 PULSE_SERVER=127.0.0.1 hermes-android-session'; do
     printf '%s\n' "$output" | grep -Fq -- "$expected" \
         || fail "Android launcher includes: $expected"
 done
+
+if printf '%s\n' "$output" | grep -Fq -- '--daemon'; then
+    fail 'Android launcher does not pass unsupported --daemon to xfwm4'
+fi
 
 printf 'ok - Android launcher starts X11 and enters Ubuntu directly\n'
 
@@ -39,7 +44,14 @@ done
 
 cat >"$fake_bin/xfwm4" <<EOF
 #!/usr/bin/env bash
+case " $* " in
+    *' --daemon '*)
+        printf 'xfwm4: Unknown option --daemon.\n' >&2
+        exit 2
+        ;;
+esac
 printf 'xfwm4 %s\n' "\$*" >>"$call_log"
+/bin/sleep 5
 EOF
 chmod +x "$fake_bin/xfwm4"
 
@@ -58,13 +70,23 @@ printf '%s\n' "\$*" >>"$call_log"
 EOF
 chmod +x "$fake_bin/proot-distro"
 
-if ! PATH="$fake_bin:/usr/bin:/bin" HERMES_ANDROID_TEST_LAYER=termux \
+if ! timeout 2 env PATH="$fake_bin:/usr/bin:/bin" HERMES_ANDROID_TEST_LAYER=termux \
     bash "$launcher" >/dev/null 2>&1; then
     fail 'Android launcher proceeds with the standalone window manager'
 fi
 
-grep -Fq -- 'xfwm4 --replace --daemon' "$call_log" \
+attempt=0
+while ! grep -Fq -- 'xfwm4 --replace' "$call_log" && [ "$attempt" -lt 50 ]; do
+    attempt=$((attempt + 1))
+    sleep 0.02
+done
+
+grep -Fq -- 'xfwm4 --replace' "$call_log" \
     || fail 'Android launcher starts xfwm4 so Electron windows can maximize and resize'
+
+if grep -Fq -- '--daemon' "$call_log"; then
+    fail 'Android launcher never invokes xfwm4 with unsupported --daemon'
+fi
 
 grep -Fq -- 'login ubuntu --shared-tmp -- env DISPLAY=:1 PULSE_SERVER=127.0.0.1 hermes-android-session' \
     "$call_log" || fail 'Android launcher enters Ubuntu directly when Xfce is unavailable'
