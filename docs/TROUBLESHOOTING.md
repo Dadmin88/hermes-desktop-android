@@ -26,10 +26,12 @@ Desktop source build   .../apps/desktop/dist/index.html
 Workspace Electron     .../node_modules/electron/dist/electron
 ```
 
-Rebuild missing source artifacts inside Ubuntu:
+Restore missing source artifacts or the workspace Electron runtime inside
+Ubuntu. `--force-build` is required when `dist/index.html` and the build stamp
+survived but `node_modules/electron/dist/electron` did not:
 
 ```bash
-hermes desktop --source --build-only \
+hermes desktop --source --build-only --force-build \
   --hermes-root /usr/local/lib/hermes-agent
 ```
 

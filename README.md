@@ -215,7 +215,8 @@ The verified phone has:
 That is expected. The project builds Hermes Desktop with:
 
 ```bash
-hermes desktop --source --build-only
+hermes desktop --source --build-only --force-build \
+  --hermes-root /usr/local/lib/hermes-agent
 ```
 
 and launches the resulting renderer directly through workspace Electron. This
