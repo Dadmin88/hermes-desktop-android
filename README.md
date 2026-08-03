@@ -125,8 +125,8 @@ That command:
 1. Starts the Termux PulseAudio server.
 2. Starts Termux:X11 on display `:1` at 120 DPI.
 3. Opens the Termux:X11 Android activity.
-4. Starts Xfce only when it is already installed; otherwise it continues in
-   verified direct-X11 mode.
+4. Launches Hermes in verified direct-X11 mode. An installed Xfce session is
+   never started automatically.
 5. Enters Ubuntu with `proot-distro --shared-tmp`.
 6. Launches Hermes from its source build with workspace Electron.
 
