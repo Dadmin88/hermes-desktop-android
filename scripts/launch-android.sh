@@ -55,11 +55,25 @@ if command -v termux-wake-lock >/dev/null 2>&1; then
     termux-wake-lock >/dev/null 2>&1 || true
 fi
 
-pulseaudio --start --exit-idle-time=-1 >/dev/null 2>&1 || true
-if command -v pactl >/dev/null 2>&1 \
-    && ! pactl list short modules 2>/dev/null | grep -q 'module-native-protocol-tcp'; then
-    pactl load-module module-native-protocol-tcp \
-        listen=127.0.0.1 auth-anonymous=1 >/dev/null
+if ! env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 \
+    >/dev/null 2>&1; then
+    printf 'Unable to start or connect to Termux PulseAudio.\n' >&2
+    printf 'Run this in Termux for details: env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 --log-target=stderr\n' >&2
+    exit 1
+fi
+
+if command -v pactl >/dev/null 2>&1; then
+    if ! env -u PULSE_SERVER pactl info >/dev/null 2>&1; then
+        printf 'Unable to start or connect to Termux PulseAudio.\n' >&2
+        printf 'Run this in Termux for details: env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 --log-target=stderr\n' >&2
+        exit 1
+    fi
+
+    if ! env -u PULSE_SERVER pactl list short modules 2>/dev/null \
+        | grep -q 'module-native-protocol-tcp'; then
+        env -u PULSE_SERVER pactl load-module module-native-protocol-tcp \
+            listen=127.0.0.1 auth-anonymous=1 >/dev/null
+    fi
 fi
 
 if ! pgrep -x termux-x11 >/dev/null 2>&1; then

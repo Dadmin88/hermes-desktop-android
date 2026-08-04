@@ -34,13 +34,29 @@ fake_bin=$(mktemp -d)
 call_log=$(mktemp)
 trap 'rm -rf "$fake_bin"; rm -f "$call_log"' EXIT HUP INT TERM
 
-for command_name in pulseaudio pactl am sleep; do
+for command_name in am sleep; do
     cat >"$fake_bin/$command_name" <<'EOF'
 #!/usr/bin/env bash
 exit 0
 EOF
     chmod +x "$fake_bin/$command_name"
 done
+
+cat >"$fake_bin/pulseaudio" <<'EOF'
+#!/usr/bin/env bash
+[ "${HERMES_TEST_PULSE_FAIL:-}" != "1" ]
+EOF
+chmod +x "$fake_bin/pulseaudio"
+
+cat >"$fake_bin/pactl" <<'EOF'
+#!/usr/bin/env bash
+if [ -n "${PULSE_SERVER:-}" ] || [ "${HERMES_TEST_PULSE_FAIL:-}" = "1" ]; then
+    printf 'pa_context_connect() failed: Connection refused\n' >&2
+    exit 1
+fi
+exit 0
+EOF
+chmod +x "$fake_bin/pactl"
 
 cat >"$fake_bin/xfwm4" <<EOF
 #!/usr/bin/env bash
@@ -70,9 +86,10 @@ printf '%s\n' "\$*" >>"$call_log"
 EOF
 chmod +x "$fake_bin/proot-distro"
 
-if ! timeout 2 env PATH="$fake_bin:/usr/bin:/bin" HERMES_ANDROID_TEST_LAYER=termux \
+if ! timeout 2 env PATH="$fake_bin:/usr/bin:/bin" \
+    PULSE_SERVER=127.0.0.1 HERMES_ANDROID_TEST_LAYER=termux \
     bash "$launcher" >/dev/null 2>&1; then
-    fail 'Android launcher proceeds with the standalone window manager'
+    fail 'Android launcher ignores an inherited guest PULSE_SERVER while configuring host audio'
 fi
 
 attempt=0
@@ -108,3 +125,15 @@ grep -Fq -- 'login ubuntu --shared-tmp -- env DISPLAY=:1 PULSE_SERVER=127.0.0.1 
     "$call_log" || fail 'Android launcher enters Ubuntu when optional Xfce is installed'
 
 printf 'ok - Optional Xfce installation cannot block direct Electron mode\n'
+
+if failure_output=$(env PATH="$fake_bin:/usr/bin:/bin" \
+    HERMES_TEST_PULSE_FAIL=1 HERMES_ANDROID_TEST_LAYER=termux \
+    bash "$launcher" 2>&1); then
+    fail 'Android launcher exits when the Termux PulseAudio daemon is unavailable'
+fi
+
+printf '%s\n' "$failure_output" \
+    | grep -Fq -- 'Unable to start or connect to Termux PulseAudio.' \
+    || fail 'Android launcher explains how to diagnose an unavailable PulseAudio daemon'
+
+printf 'ok - Android launcher reports unavailable Termux PulseAudio clearly\n'
