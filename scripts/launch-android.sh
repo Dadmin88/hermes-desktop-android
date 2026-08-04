@@ -55,11 +55,24 @@ if command -v termux-wake-lock >/dev/null 2>&1; then
     termux-wake-lock >/dev/null 2>&1 || true
 fi
 
-if ! env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 \
-    >/dev/null 2>&1; then
-    printf 'Unable to start or connect to Termux PulseAudio.\n' >&2
-    printf 'Run this in Termux for details: env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 --log-target=stderr\n' >&2
-    exit 1
+start_pulseaudio() {
+    env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 \
+        >/dev/null 2>&1
+}
+
+if ! start_pulseaudio; then
+    if ! pgrep -x pulseaudio >/dev/null 2>&1; then
+        for pulse_pid_file in "$HOME"/.config/pulse/*-runtime/pid; do
+            [ -f "$pulse_pid_file" ] || continue
+            rm -f "$pulse_pid_file"
+        done
+    fi
+
+    if ! start_pulseaudio; then
+        printf 'Unable to start or connect to Termux PulseAudio.\n' >&2
+        printf 'Run this in Termux for details: env -u PULSE_SERVER pulseaudio --start --exit-idle-time=-1 --log-target=stderr\n' >&2
+        exit 1
+    fi
 fi
 
 if command -v pactl >/dev/null 2>&1; then

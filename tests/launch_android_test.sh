@@ -44,7 +44,14 @@ done
 
 cat >"$fake_bin/pulseaudio" <<'EOF'
 #!/usr/bin/env bash
-[ "${HERMES_TEST_PULSE_FAIL:-}" != "1" ]
+if [ "${HERMES_TEST_PULSE_FAIL:-}" = "1" ]; then
+    exit 1
+fi
+if [ "${HERMES_TEST_STALE_PID:-}" = "1" ] \
+    && [ -f "$HOME/.config/pulse/test-runtime/pid" ]; then
+    exit 1
+fi
+exit 0
 EOF
 chmod +x "$fake_bin/pulseaudio"
 
@@ -125,6 +132,22 @@ grep -Fq -- 'login ubuntu --shared-tmp -- env DISPLAY=:1 PULSE_SERVER=127.0.0.1 
     "$call_log" || fail 'Android launcher enters Ubuntu when optional Xfce is installed'
 
 printf 'ok - Optional Xfce installation cannot block direct Electron mode\n'
+
+stale_home="$fake_bin/stale-home"
+mkdir -p "$stale_home/.config/pulse/test-runtime"
+printf '3033\n' >"$stale_home/.config/pulse/test-runtime/pid"
+
+if ! env PATH="$fake_bin:/usr/bin:/bin" HOME="$stale_home" \
+    HERMES_TEST_STALE_PID=1 HERMES_ANDROID_TEST_LAYER=termux \
+    bash "$launcher" >/dev/null 2>&1; then
+    fail 'Android launcher recovers a stale PulseAudio PID file'
+fi
+
+if [ -e "$stale_home/.config/pulse/test-runtime/pid" ]; then
+    fail 'Android launcher removes the stale PulseAudio PID file before retrying'
+fi
+
+printf 'ok - Android launcher recovers a stale PulseAudio PID file\n'
 
 if failure_output=$(env PATH="$fake_bin:/usr/bin:/bin" \
     HERMES_TEST_PULSE_FAIL=1 HERMES_ANDROID_TEST_LAYER=termux \
