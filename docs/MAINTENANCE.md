@@ -38,12 +38,12 @@ proot-distro login ubuntu --shared-tmp -- \
 
 ## Refresh launchers without rebuilding Hermes
 
-This updates only the host and guest launch wrappers for release `v0.1.1`. It
+This updates only the host and guest launch wrappers for release `v0.1.2`. It
 does not reinstall packages, change the Hermes checkout, or rebuild Desktop.
 Run it from the Termux host:
 
 ```bash
-release=v0.1.1
+release=v0.1.2
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh.sha256"
 sha256sum --check install-launchers.sh.sha256
@@ -57,7 +57,7 @@ download or guest stage fails, existing launchers remain in place.
 ## Reinstall the current release
 
 First back up `/root/.hermes`, then download and verify the release installer as
-described in the main README. Re-running `v0.1.1` is safe when the existing
+described in the main README. Re-running `v0.1.2` is safe when the existing
 Hermes checkout is clean and already points at the verified pinned revision.
 
 The installer deliberately refuses to replace an existing checkout at another

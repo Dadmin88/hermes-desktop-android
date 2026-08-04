@@ -3,7 +3,7 @@
 set -eu
 
 dry_run=false
-repo_ref="${HERMES_ANDROID_REPO_REF:-v0.1.1}"
+repo_ref="${HERMES_ANDROID_REPO_REF:-v0.1.2}"
 hermes_commit="${HERMES_AGENT_COMMIT:-c2ff2e8b17f5dd0460aa020aaa21deb59d7fe15f}"
 raw_base="https://raw.githubusercontent.com/Dadmin88/hermes-desktop-android/$repo_ref"
 

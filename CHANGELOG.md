@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here.
 
+## v0.1.2 — 2026-08-04
+
+Termux PulseAudio startup recovery release.
+
+### Fixed
+
+- Isolate host-side PulseAudio commands from an inherited guest
+  `PULSE_SERVER`, preventing a loopback TCP configuration deadlock.
+- Detect and remove a stale per-user PulseAudio PID file only when no live
+  PulseAudio process exists, then retry daemon startup automatically.
+- Fail with an actionable diagnostic when PulseAudio remains unavailable.
+
+### Verification boundary
+
+The original stale-PID failure was reproduced on a physical Android device:
+PulseAudio refused startup because its PID file referenced a missing process.
+Removing that stale PID restored Hermes Desktop, and the equivalent guarded
+recovery path is covered by the launcher regression suite. Broader Android
+device compatibility remains unchanged from `v0.1.1`.
+
 ## v0.1.1 — 2026-08-03
 
 Second-device compatibility release.
