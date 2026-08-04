@@ -3,16 +3,34 @@
 [![Shell checks](https://github.com/Dadmin88/hermes-desktop-android/actions/workflows/shell-checks.yml/badge.svg)](https://github.com/Dadmin88/hermes-desktop-android/actions/workflows/shell-checks.yml)
 [![Release](https://img.shields.io/github/v/release/Dadmin88/hermes-desktop-android)](https://github.com/Dadmin88/hermes-desktop-android/releases/latest)
 
-Run the real Linux Hermes Desktop Electron application on an Android phone
-through Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders
-Hermes directly into X11 with the standalone `xfwm4` window manager. It does
-not start a full Xfce desktop session.
+<p align="center">
+  <img src="docs/assets/hermes-android-hero.png" alt="Presentation card showing the real Hermes Desktop Linux Electron interface running locally on Android" width="100%">
+</p>
+
+Run the real Linux Hermes Desktop Electron application locally on Android through
+Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders Hermes
+directly into X11 with the standalone `xfwm4` window manager—without starting a
+full Xfce desktop session.
+
+**[Install v0.1.1](#install)** · **[Report your device](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)** · **[Read the architecture](docs/STACK.md)**
 
 > [!IMPORTANT]
-> This is a community experiment, not an official Nous Research Android port.
-> Hermes officially supports its CLI on Termux. Its Desktop app is supported on
-> desktop operating systems; this project documents a compatibility layer for
-> running it on Android.
+> This is a community compatibility project, not an official Nous Research
+> Android port, native APK, or remote-desktop setup. Hermes officially supports
+> its CLI on Termux. This repository documents a compatibility layer for running
+> the separate Desktop application on Android and currently claims only the two
+> manually verified physical devices listed below.
+
+## Authentic Android proof
+
+<p align="center">
+  <img src="docs/assets/android-recents-proof.jpg" alt="Raw Samsung Android Recents screen showing Termux and the separate Termux:X11 session containing Hermes Desktop" width="420">
+</p>
+
+Android's own Recents interface shows the Termux terminal environment beside the
+separate Termux:X11 session containing Hermes Desktop. This is the original
+physical-device capture—not a generated device mockup. The presentation card
+above uses a separate authentic Hermes-on-phone capture.
 
 ## What you get
 
