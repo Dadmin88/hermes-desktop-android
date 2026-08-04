@@ -14,7 +14,7 @@ output=$(HERMES_ANDROID_TEST_LAYER=termux bash "$installer" --dry-run 2>&1) \
     || fail 'launcher-only installer dry run exits successfully'
 
 for expected in \
-    'hermes-desktop-android/v0.1.1/' \
+    'hermes-desktop-android/v0.1.2/' \
     '/bin/hermes-android' \
     '/bin/hermes-ubuntu' \
     'proot-distro login ubuntu --shared-tmp' \

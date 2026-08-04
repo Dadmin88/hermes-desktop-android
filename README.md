@@ -12,7 +12,7 @@ Termux, Termux:X11, and an Ubuntu PRoot guest. The verified path renders Hermes
 directly into X11 with the standalone `xfwm4` window manager—without starting a
 full Xfce desktop session.
 
-**[Install v0.1.1](#install)** · **[Report your device](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)** · **[Read the architecture](docs/STACK.md)**
+**[Install v0.1.2](#install)** · **[Report your device](https://github.com/Dadmin88/hermes-desktop-android/issues/new?template=device-report.yml)** · **[Read the architecture](docs/STACK.md)**
 
 > [!IMPORTANT]
 > This is a community compatibility project, not an official Nous Research
@@ -86,7 +86,7 @@ a compatible GitHub-built Termux APK. Do not mix APK sources.
 Open the **Termux host shell**—not an Ubuntu prompt—and run:
 
 ```bash
-release=v0.1.1
+release=v0.1.2
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-termux.sh.sha256"
 sha256sum --check install-termux.sh.sha256
@@ -121,7 +121,7 @@ To install only the launch wrappers without changing packages, the Hermes
 checkout, or the Desktop build, run from Termux:
 
 ```bash
-release=v0.1.1
+release=v0.1.2
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/install-launchers.sh.sha256"
 sha256sum --check install-launchers.sh.sha256
@@ -269,7 +269,7 @@ Only run trusted code and trusted Electron content in this environment.
 The doctor is layer-aware. Run it once from Termux:
 
 ```bash
-release=v0.1.1
+release=v0.1.2
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh"
 curl -fSLO "https://github.com/Dadmin88/hermes-desktop-android/releases/download/$release/doctor.sh.sha256"
 sha256sum --check doctor.sh.sha256
@@ -314,7 +314,7 @@ with both layer-aware doctor reports and your device model.
 
 ## Releases
 
-The current project release is `v0.1.1`. Installers default to that project tag
+The current project release is `v0.1.2`. Installers default to that project tag
 and separately pin the known-working Hermes upstream revision. See the
 [changelog](CHANGELOG.md) and [release page](https://github.com/Dadmin88/hermes-desktop-android/releases/latest).
 
