@@ -111,6 +111,27 @@ The installer deliberately has two stages:
 The first build downloads and compiles a substantial JavaScript/Electron
 workspace. Keep Termux in the foreground and prevent Android from suspending it.
 
+> [!WARNING]
+> Keep the desktop build inside the Ubuntu PRoot guest. Do **not** run
+> `hermes desktop --source --build-only` or `npm ci` directly at the Termux host
+> prompt. Native dependencies such as `node-pty` will detect Android, look for
+> an Android NDK build configuration, and fail; that Termux-side failure does
+> not indicate that the supported Ubuntu build is broken.
+>
+> If `hermes-android` reports that the workspace Electron runtime is missing,
+> rebuild it from Termux with:
+>
+> ```bash
+> hermes-ubuntu
+> hermes desktop --source --build-only --force-build \
+>   --hermes-root /usr/local/lib/hermes-agent
+> exit
+> hermes-android
+> ```
+>
+> The build command must run after `hermes-ubuntu` changes the shell into the
+> Ubuntu guest. The final `hermes-android` command runs back in Termux.
+
 If Ubuntu already contains a different Hermes checkout, the installer stops
 instead of force-replacing it. Back up deliberate local changes before opting
 into any commit replacement.
